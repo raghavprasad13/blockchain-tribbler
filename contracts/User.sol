@@ -4,13 +4,9 @@ pragma solidity ^0.8.0;
 
 // import "../Seriality/src/Seriality.sol";
 import "./Utils.sol";
+import "./TribHeap.sol";
 
 contract User {
-    uint16 public constant MAX_FOLLOWING = 2000;
-    uint16 public constant MAX_USERNAME_LEN = 15;
-    uint16 public constant MAX_TRIB_LEN = 140;
-    uint16 public constant MAX_TRIB_FETCH = 100;
-
     struct FollowUnfollowLogItem {
         bool isValid;
         bool isFollow;
@@ -18,32 +14,36 @@ contract User {
         // TODO: add unique identifier: tx hash
     }
 
-    struct Trib {
-        string username;
-    }
-
+    address _address;
     string username;
-    string[] posts;
+    TribHeap _tribs;
     FollowUnfollowLogItem[] followUnfollowLog;
-
-    // mapping(string => bool) _followingMapping; // to be used in following function
+    string[] _following;
 
     constructor(string memory _username) {
         username = _username;
+        _tribs = new TribHeap();
+        _address = msg.sender;
     }
 
     function getUserName() public view returns (string memory) {
         return username;
     }
 
-    function post(string memory _post) public returns (bool) {
-        // TODO: error checking here, or in Python
-        posts.push(_post);
+    function post(Tribs.Trib memory trib) public returns (bool) {
+        _tribs.push(trib);
         return true;
     }
 
-    function tribs() public view returns (string[] memory) {
-        return posts;
+    function tribs() public returns (TribHeap) {
+        uint256 numberOfTribs = _tribs.length();
+        if (numberOfTribs > Constants.MAX_TRIB_FETCH) {
+            uint256 numTribsToDelete = numberOfTribs - Constants.MAX_TRIB_FETCH;
+            for (uint256 i = 0; i < numTribsToDelete; i++) {
+                _tribs.popReverse();
+            }
+        }
+        return _tribs;
     }
 
     function follow(string memory userToFollow) public returns (bool) {
@@ -69,8 +69,7 @@ contract User {
     }
 
     function following() public returns (string[] memory) {
-        string[] memory _following = new string[](MAX_FOLLOWING);
-        uint16 _followingSize = 0;
+        delete _following;
 
         for (uint256 i = 0; i < followUnfollowLog.length; i++) {
             FollowUnfollowLogItem storage logItem = followUnfollowLog[i];
@@ -79,18 +78,15 @@ contract User {
                 if (Utils.getIndex(_following, logItem.whom) != -1) {
                     logItem.isValid = false;
                 } else {
-                    _following[_followingSize] = logItem.whom;
-                    _followingSize++;
+                    _following.push(logItem.whom);
                 }
             } else {
                 int256 idx = Utils.getIndex(_following, logItem.whom);
                 if (idx != -1) {
-                    Utils.deleteAtIndexUnordered(
+                    _following = Utils.deleteAtIndexUnordered(
                         _following,
-                        uint256(idx),
-                        _followingSize
+                        uint256(idx)
                     );
-                    _followingSize--;
                 } else {
                     logItem.isValid = false;
                 }

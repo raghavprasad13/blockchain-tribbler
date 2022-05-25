@@ -6,9 +6,9 @@ library Tribs {
     struct Trib {
         string who;
         string message;
-        uint256 timestamp;
+        uint256 timestamp; // this won't be system time, rather it will be block.timestamp
         uint256 blockNum;
-        uint256 txIndex;
+        uint256 txGasPrice; // because we cannot get txIndex
     }
 
     function compare(Trib memory t1, Trib memory t2)
@@ -23,7 +23,7 @@ library Tribs {
 
         // Tribble order is:
         // Trib with higher block number appears on top; if equal
-        // Trib with higher tx index appears on top; if equal (not really possible but let's still go on)
+        // Trib with higher tx gas price appears on top; if equal
         // Trib with higher timestamp appears on top; if equal
         // Trib with lexicographically first username appears on top; if equal
         // Trib with lexicographically first message appears on top; if equal
@@ -36,9 +36,9 @@ library Tribs {
         if (t1.blockNum > t2.blockNum) return 1;
         else if (t1.blockNum < t2.blockNum) return -1;
         else {
-            // compare txIndex
-            if (t1.txIndex > t2.txIndex) return 1;
-            else if (t1.txIndex < t2.txIndex) return -1;
+            // compare txGasprice
+            if (t1.txGasPrice > t2.txGasPrice) return 1;
+            else if (t1.txGasPrice < t2.txGasPrice) return -1;
             else {
                 // compare timestamp
                 if (t1.timestamp > t2.timestamp) return 1;

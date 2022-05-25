@@ -3,6 +3,7 @@
 pragma solidity ^0.8.0;
 
 import "./Tribs.sol";
+import "./Utils.sol";
 
 contract TribHeap {
     Tribs.Trib[] tribHeap;
@@ -56,13 +57,33 @@ contract TribHeap {
         return res;
     }
 
-    function getTribHeap() public view returns (Tribs.Trib[] memory) {
+    function getTribHeap() public returns (Tribs.Trib[] memory) {
         require(tribHeap.length > 1, "TribHeap is empty");
-        return tribHeap;
+
+        Tribs.Trib[] memory tribHeapOriginal = Utils.deepCopy(tribHeap);
+        Tribs.Trib[] memory tribHeapRes = Utils.deleteAtIndex(tribHeap, 0);
+        tribHeap = Utils.deepCopy(tribHeapOriginal);
+
+        return tribHeapRes;
+    }
+
+    function length() public view returns (uint256) {
+        return tribHeap.length - 1;
     }
 
     function peek() public view returns (Tribs.Trib memory) {
         require(tribHeap.length > 1, "TribHeap is empty");
+
         return tribHeap[1];
+    }
+
+    function popReverse() public returns (Tribs.Trib memory) {
+        require(tribHeap.length > 1, "TribHeap is empty");
+
+        Tribs.Trib memory res = tribHeap[tribHeap.length - 1];
+
+        tribHeap.pop();
+
+        return res;
     }
 }
