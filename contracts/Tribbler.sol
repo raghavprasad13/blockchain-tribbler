@@ -58,11 +58,84 @@ contract Tribbler {
     function tribs(string memory username)
         public
         returns (Tribs.Trib[] memory)
-    {}
+    {
+        require(Utils.isValidUsername(username), "Username is invalid");
+        require(usernames[username], "User does not exist");
 
-    function home(string memory username)
+        User user = users[msg.sender];
+        return user.tribs();
+    }
+
+    function follow(string memory who, string memory whom)
         public
-        view
+        returns (bool)
+    {
+        require(
+            !Utils.whoWhomSame(who, whom),
+            "Both the usernames are the same"
+        );
+        require(
+            Utils.isValidUsername(who) && Utils.isValidUsername(whom),
+            "Username is invalid"
+        );
+        require(usernames[who] && usernames[whom], "User does not exist");
+
+        User user = users[msg.sender];
+        return user.follow(whom);
+    }
+
+    function unfollow(string memory who, string memory whom)
+        public
+        returns (bool)
+    {
+        require(
+            !Utils.whoWhomSame(who, whom),
+            "Both the usernames are the same"
+        );
+        require(
+            Utils.isValidUsername(who) && Utils.isValidUsername(whom),
+            "Username is invalid"
+        );
+        require(usernames[who] && usernames[whom], "User does not exist");
+
+        User user = users[msg.sender];
+        return user.unfollow(whom);
+    }
+
+    function isFollowing(string memory who, string memory whom)
+        public
+        returns (bool)
+    {
+        require(
+            !Utils.whoWhomSame(who, whom),
+            "Both the usernames are the same"
+        );
+        require(
+            Utils.isValidUsername(who) && Utils.isValidUsername(whom),
+            "Username is invalid"
+        );
+        require(usernames[who] && usernames[whom], "User does not exist");
+
+        User user = users[msg.sender];
+        return user.isFollowing(whom);
+    }
+
+    function following(string memory username)
+        public
         returns (string[] memory)
-    {}
+    {
+        require(Utils.isValidUsername(username), "Username is invalid");
+        require(usernames[username], "User does not exist");
+
+        User user = users[msg.sender];
+        return user.following();
+    }
+
+    function home(string memory username) public returns (Tribs.Trib[] memory) {
+        require(Utils.isValidUsername(username), "Username is invalid");
+        require(usernames[username], "User does not exist");
+
+        User user = users[msg.sender];
+        return user.home();
+    }
 }

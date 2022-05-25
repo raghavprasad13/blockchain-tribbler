@@ -11,7 +11,7 @@ contract User {
         bool isValid;
         bool isFollow;
         string whom;
-        // TODO: add unique identifier: tx hash
+        // TODO: add unique identifier: txHash. It seems like txHash is not accessibl, maybe block.timestamp may come handy (unlikely though)
     }
 
     address _address;
@@ -35,7 +35,7 @@ contract User {
         return true;
     }
 
-    function tribs() public returns (TribHeap) {
+    function tribs() public returns (Tribs.Trib[] memory) {
         uint256 numberOfTribs = _tribs.length();
         if (numberOfTribs > Constants.MAX_TRIB_FETCH) {
             uint256 numTribsToDelete = numberOfTribs - Constants.MAX_TRIB_FETCH;
@@ -43,19 +43,22 @@ contract User {
                 _tribs.popReverse();
             }
         }
-        return _tribs;
+
+        return _tribs.getTribHeap();
     }
 
     function follow(string memory userToFollow) public returns (bool) {
-        // TODO: error checking, here or in Python
+        // TODO
         // TODO: add transaction hash as unique identifier
         followUnfollowLog.push(FollowUnfollowLogItem(true, true, userToFollow));
         // isFollowing[userToFollow] = true;
+        // this may have to be done in Python because the txHash to uniquely identify the log entry isn't available until the transaction is complete.
+        // In python, the follow/unfollow operation could be one transaction, then the txHash of that transaction can be used to store into the FollowUnfollowlog
         return true;
     }
 
     function unfollow(string memory userToUnfollow) public returns (bool) {
-        // TODO: error checking, here or in Python
+        // TODO
         followUnfollowLog.push(
             FollowUnfollowLogItem(true, false, userToUnfollow)
         );
@@ -96,5 +99,7 @@ contract User {
         return _following;
     }
 
-    // function
+    function home() public returns (Tribs.Trib[] memory) {
+        // TODO
+    }
 }

@@ -6,6 +6,16 @@ import "./Constants.sol";
 import "./Tribs.sol";
 
 library Utils {
+    function whoWhomSame(string memory who, string memory whom)
+        public
+        pure
+        returns (bool)
+    {
+        return
+            keccak256(abi.encodePacked(who)) ==
+            keccak256(abi.encodePacked(whom));
+    }
+
     function isValidUsername(string memory username)
         public
         pure
