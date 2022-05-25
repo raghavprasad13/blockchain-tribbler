@@ -9,7 +9,7 @@ contract TribHeap {
     Tribs.Trib[] tribHeap;
 
     constructor() {
-        tribHeap[0] = Tribs.Trib("", "", 0, 0, 0); // the top of the heap will be a dummy element
+        tribHeap.push(Tribs.Trib("", "", 0, 0, 0)); // the top of the heap will be a dummy element
     }
 
     function push(Tribs.Trib memory trib) public {
@@ -62,7 +62,8 @@ contract TribHeap {
 
         Tribs.Trib[] memory tribHeapOriginal = Utils.deepCopy(tribHeap);
         Tribs.Trib[] memory tribHeapRes = Utils.deleteAtIndex(tribHeap, 0);
-        tribHeap = Utils.deepCopy(tribHeapOriginal);
+        delete tribHeap;
+        Utils.deepCopy(tribHeapOriginal, tribHeap);
 
         return tribHeapRes;
     }

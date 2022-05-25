@@ -11,7 +11,7 @@ contract User {
         bool isValid;
         bool isFollow;
         string whom;
-        // TODO: add unique identifier: txHash. It seems like txHash is not accessibl, maybe block.timestamp may come handy (unlikely though)
+        // string txHash;
     }
 
     address _address;

@@ -9,7 +9,7 @@ contract StringHeap {
     string[] stringHeap;
 
     constructor() {
-        stringHeap[0] = "";
+        stringHeap.push("");
     }
 
     function push(string memory str) public {

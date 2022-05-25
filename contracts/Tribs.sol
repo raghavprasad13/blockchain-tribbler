@@ -8,7 +8,7 @@ library Tribs {
         string message;
         uint256 timestamp; // this won't be system time, rather it will be block.timestamp
         uint256 blockNum;
-        uint256 txGasPrice; // because we cannot get txIndex
+        uint256 txGasPrice; // because we cannot get txIndex. Update: we can get txIndex, but then the operation will have to be broken up into 2 transactions
     }
 
     function compare(Trib memory t1, Trib memory t2)

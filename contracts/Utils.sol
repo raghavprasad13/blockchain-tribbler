@@ -155,4 +155,12 @@ library Utils {
 
         return res;
     }
+
+    function deepCopy(Tribs.Trib[] memory arr, Tribs.Trib[] storage copy)
+        public
+    {
+        // Tribs.Trib[] memory res = new Tribs.Trib[](arr.length);
+
+        for (uint256 i = 0; i < arr.length; i++) copy.push(arr[i]);
+    }
 }
