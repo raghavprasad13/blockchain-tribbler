@@ -6,3 +6,4 @@ build/
 reports/
 .DS_Store
 .vscode/
+blockchain-tribbler-venv/
