@@ -102,9 +102,6 @@ library Utils {
         public
         returns (string[] memory)
     {
-        // overloaded function that deletes element
-        // at index in a string array inplace
-
         uint256 size = arr.length;
         require(index < size && size > 0, "ArrayIndexOutOfBounds");
 
@@ -120,9 +117,6 @@ library Utils {
         public
         returns (Tribs.Trib[] memory)
     {
-        // overloaded function that deletes element
-        // at index in a string array inplace
-
         uint256 size = arr.length;
         require(index < size && size > 0, "ArrayIndexOutOfBounds");
 
@@ -139,10 +133,19 @@ library Utils {
         pure
         returns (string[] memory)
     {
+        // This returns a "memory" copy of a string[] variable
+
         string[] memory res = new string[](arr.length);
         for (uint256 i = 0; i < arr.length; i++) res[i] = arr[i];
 
         return res;
+    }
+
+    function deepCopy(string[] memory arr, string[] storage copy) public {
+        // This copies from "memory" string[] variable to "storage" string[] variable
+        // Take care that copy is empty before passing it in here
+
+        for (uint256 i = 0; i < arr.length; i++) copy.push(arr[i]);
     }
 
     function deepCopy(Tribs.Trib[] memory arr)
@@ -150,6 +153,8 @@ library Utils {
         pure
         returns (Tribs.Trib[] memory)
     {
+        // This returns a "memory" copy of a Tribs.Trib[] variable
+
         Tribs.Trib[] memory res = new Tribs.Trib[](arr.length);
         for (uint256 i = 0; i < arr.length; i++) res[i] = arr[i];
 
@@ -159,8 +164,49 @@ library Utils {
     function deepCopy(Tribs.Trib[] memory arr, Tribs.Trib[] storage copy)
         public
     {
-        // Tribs.Trib[] memory res = new Tribs.Trib[](arr.length);
+        // This copies from "memory" Tribs.Trib[] variable to "storage" Tribs.Trib[] variable
+        // Take care that copy is empty before passing it in here
 
         for (uint256 i = 0; i < arr.length; i++) copy.push(arr[i]);
+    }
+
+    function mergeSortedArrays(
+        Tribs.Trib[] memory arr1,
+        Tribs.Trib[] memory arr2
+    ) public pure returns (Tribs.Trib[] memory) {
+        uint256 n1 = arr1.length;
+        uint256 n2 = arr2.length;
+
+        Tribs.Trib[] memory resArr = new Tribs.Trib[](n1 + n2);
+
+        uint256 i;
+        uint256 j;
+        uint256 k;
+
+        while (i < n1 && j < n2) {
+            if (Tribs.compare(arr1[i], arr2[j]) == 1) {
+                resArr[k] = arr1[i];
+                k++;
+                i++;
+            } else {
+                resArr[k] = arr2[j];
+                k++;
+                j++;
+            }
+        }
+
+        while (i < n1) {
+            resArr[k] = arr1[i];
+            k++;
+            i++;
+        }
+
+        while (j < n2) {
+            resArr[k] = arr2[j];
+            k++;
+            j++;
+        }
+
+        return resArr;
     }
 }

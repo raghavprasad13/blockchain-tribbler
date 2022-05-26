@@ -5,13 +5,14 @@ pragma solidity ^0.8.0;
 // import "../Seriality/src/Seriality.sol";
 import "./Utils.sol";
 import "./TribHeap.sol";
+import "./String.sol";
 
 contract User {
     struct FollowUnfollowLogItem {
         bool isValid;
         bool isFollow;
         string whom;
-        // string txHash;
+        string txHash;
     }
 
     address _address;
@@ -47,22 +48,68 @@ contract User {
         return _tribs.getTribHeap();
     }
 
-    function follow(string memory userToFollow) public returns (bool) {
-        // TODO
-        // TODO: add transaction hash as unique identifier
-        followUnfollowLog.push(FollowUnfollowLogItem(true, true, userToFollow));
-        // isFollowing[userToFollow] = true;
-        // this may have to be done in Python because the txHash to uniquely identify the log entry isn't available until the transaction is complete.
-        // In python, the follow/unfollow operation could be one transaction, then the txHash of that transaction can be used to store into the FollowUnfollowlog
-        return true;
-    }
+    function appendToFollowUnfollowLog(
+        bool isFollow,
+        string memory whom,
+        string memory txHash
+    ) public returns (bool) {
+        FollowUnfollowLogItem memory logItem = FollowUnfollowLogItem({
+            isValid: true,
+            isFollow: isFollow,
+            whom: whom,
+            txHash: txHash
+        });
 
-    function unfollow(string memory userToUnfollow) public returns (bool) {
-        // TODO
-        followUnfollowLog.push(
-            FollowUnfollowLogItem(true, false, userToUnfollow)
+        followUnfollowLog.push(logItem);
+
+        delete _following;
+
+        for (uint256 i = 0; i < followUnfollowLog.length; i++) {
+            FollowUnfollowLogItem storage _logItem = followUnfollowLog[i];
+
+            if (_logItem.isFollow) {
+                if (Utils.getIndex(_following, _logItem.whom) != -1) {
+                    _logItem.isValid = false;
+                } else {
+                    _following.push(_logItem.whom);
+                }
+            } else {
+                int256 idx = Utils.getIndex(_following, _logItem.whom);
+                if (idx != -1) {
+                    _following = Utils.deleteAtIndexUnordered(
+                        _following,
+                        uint256(idx)
+                    );
+                } else {
+                    _logItem.isValid = false;
+                }
+            }
+        }
+
+        uint256 followingCount = _following.length;
+        require(
+            followingCount <= Constants.MAX_FOLLOWING,
+            "Following too many people"
         );
-        // isFollowing[userToUnfollow] = false;
+
+        bool followResult;
+        bool foundLogEntry;
+
+        for (uint256 i = 0; i < followUnfollowLog.length; i++) {
+            FollowUnfollowLogItem storage _logItem = followUnfollowLog[i];
+            if (
+                String.compare(_logItem.whom, whom) == 0 &&
+                String.compare(_logItem.txHash, txHash) == 0
+            ) {
+                followResult = _logItem.isValid;
+                foundLogEntry = true;
+            }
+        }
+
+        if (!(foundLogEntry && followResult)) {
+            return false; // already following
+        }
+
         return true;
     }
 
@@ -96,10 +143,6 @@ contract User {
             }
         }
 
-        return _following;
-    }
-
-    function home() public returns (Tribs.Trib[] memory) {
-        // TODO
+        return _following; // maybe have a Util function to convert storage to memory?
     }
 }

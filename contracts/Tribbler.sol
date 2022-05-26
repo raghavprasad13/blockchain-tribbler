@@ -10,6 +10,7 @@ import "./StringHeap.sol";
 
 contract Tribbler {
     mapping(address => User) public users;
+    mapping(string => User) public usernameUserMapping;
     mapping(string => bool) public usernames; // this will be used to check if users already exist
     StringHeap usernameArray; // this will be used for listUsers
 
@@ -25,6 +26,7 @@ contract Tribbler {
         if (usernameArray.length() < Constants.MIN_LIST_USER)
             usernameArray.push(username);
         users[msg.sender] = user;
+        usernameUserMapping[username] = user;
         usernames[username] = true;
         return true;
     }
@@ -43,12 +45,22 @@ contract Tribbler {
         );
         require(Utils.isValidUsername(username), "Username is invalid");
 
+        return true;
+    }
+
+    function addTrib(
+        string memory username,
+        string memory message,
+        uint256 timestamp,
+        uint256 blockNum,
+        uint256 txIndex
+    ) public returns (bool) {
         Tribs.Trib memory trib = Tribs.Trib(
             username,
-            _post,
-            block.timestamp,
-            block.number,
-            tx.gasprice
+            message,
+            timestamp,
+            blockNum,
+            txIndex
         );
 
         User user = users[msg.sender];
@@ -66,7 +78,7 @@ contract Tribbler {
         return user.tribs();
     }
 
-    function follow(string memory who, string memory whom)
+    function followOrUnfollow(string memory who, string memory whom)
         public
         returns (bool)
     {
@@ -80,26 +92,17 @@ contract Tribbler {
         );
         require(usernames[who] && usernames[whom], "User does not exist");
 
-        User user = users[msg.sender];
-        return user.follow(whom);
+        return true;
     }
 
-    function unfollow(string memory who, string memory whom)
-        public
-        returns (bool)
-    {
-        require(
-            !Utils.whoWhomSame(who, whom),
-            "Both the usernames are the same"
-        );
-        require(
-            Utils.isValidUsername(who) && Utils.isValidUsername(whom),
-            "Username is invalid"
-        );
-        require(usernames[who] && usernames[whom], "User does not exist");
-
+    function appendToFollowUnfollowLog(
+        bool isFollow,
+        // string memory who,
+        string memory whom,
+        string memory txHash
+    ) public returns (bool) {
         User user = users[msg.sender];
-        return user.unfollow(whom);
+        return user.appendToFollowUnfollowLog(isFollow, whom, txHash);
     }
 
     function isFollowing(string memory who, string memory whom)
@@ -136,6 +139,23 @@ contract Tribbler {
         require(usernames[username], "User does not exist");
 
         User user = users[msg.sender];
-        return user.home();
+
+        // get own tribs first
+        Tribs.Trib[] memory homeList = user.tribs();
+
+        // TODO?: cleanup logs; maybe in following?
+
+        string[] memory followList = user.following();
+
+        for (uint256 i = 0; i < followList.length; i++) {
+            string memory followedUsername = followList[i];
+            if (!usernames[followedUsername]) continue;
+
+            User followedUser = usernameUserMapping[followedUsername];
+            Tribs.Trib[] memory followedUserTribs = followedUser.tribs();
+            homeList = Utils.mergeSortedArrays(homeList, followedUserTribs);
+        }
+
+        return homeList;
     }
 }

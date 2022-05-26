@@ -2,13 +2,15 @@
 
 pragma solidity ^0.8.0;
 
+import "./String.sol";
+
 library Tribs {
     struct Trib {
         string who;
         string message;
-        uint256 timestamp; // this won't be system time, rather it will be block.timestamp
+        uint256 timestamp;
         uint256 blockNum;
-        uint256 txGasPrice; // because we cannot get txIndex. Update: we can get txIndex, but then the operation will have to be broken up into 2 transactions
+        uint256 txIndex; // because we cannot get txIndex. Update: we can get txIndex, but then the operation will have to be broken up into 2 transactions
     }
 
     function compare(Trib memory t1, Trib memory t2)
@@ -36,14 +38,21 @@ library Tribs {
         if (t1.blockNum > t2.blockNum) return 1;
         else if (t1.blockNum < t2.blockNum) return -1;
         else {
-            // compare txGasprice
-            if (t1.txGasPrice > t2.txGasPrice) return 1;
-            else if (t1.txGasPrice < t2.txGasPrice) return -1;
+            // compare txIndex
+            if (t1.txIndex < t2.txIndex) return 1;
+            else if (t1.txIndex > t2.txIndex) return -1;
             else {
                 // compare timestamp
                 if (t1.timestamp > t2.timestamp) return 1;
                 else if (t1.timestamp < t2.timestamp) return -1;
-                else return 0;
+                else {
+                    // compare usernames
+                    if (String.compare(t1.who, t2.who) == 1) return 1;
+                    else if (String.compare(t1.who, t2.who) == -1) return -1;
+
+                    // compare messages
+                    return String.compare(t1.message, t2.message);
+                }
             }
         }
     }
