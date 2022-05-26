@@ -4,7 +4,6 @@ pragma solidity ^0.8.0;
 
 // import "../Seriality/src/Seriality.sol";
 import "./Utils.sol";
-import "./TribHeap.sol";
 import "./String.sol";
 
 contract User {
@@ -15,16 +14,13 @@ contract User {
         string txHash;
     }
 
-    address _address;
     string username;
-    TribHeap _tribs;
+    Tribs.Trib[] _tribs;
     FollowUnfollowLogItem[] followUnfollowLog;
     string[] _following;
 
     constructor(string memory _username) {
         username = _username;
-        _tribs = new TribHeap();
-        _address = msg.sender;
     }
 
     function getUserName() public view returns (string memory) {
@@ -37,15 +33,16 @@ contract User {
     }
 
     function tribs() public returns (Tribs.Trib[] memory) {
-        uint256 numberOfTribs = _tribs.length();
+        uint256 numberOfTribs = _tribs.length;
+        Utils.sort(_tribs, 0, _tribs.length - 1);
         if (numberOfTribs > Constants.MAX_TRIB_FETCH) {
             uint256 numTribsToDelete = numberOfTribs - Constants.MAX_TRIB_FETCH;
             for (uint256 i = 0; i < numTribsToDelete; i++) {
-                _tribs.popReverse();
+                _tribs.pop();
             }
         }
 
-        return _tribs.getTribHeap();
+        return _tribs;
     }
 
     function appendToFollowUnfollowLog(

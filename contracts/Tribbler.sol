@@ -6,24 +6,19 @@ import "./User.sol";
 import "./Constants.sol";
 import "./Tribs.sol";
 import "./Utils.sol";
-import "./StringHeap.sol";
 
 contract Tribbler {
     mapping(address => User) public users;
     mapping(string => User) public usernameUserMapping;
     mapping(string => bool) public usernames; // this will be used to check if users already exist
-    StringHeap usernameArray; // this will be used for listUsers
-
-    constructor() {
-        usernameArray = new StringHeap();
-    }
+    string[] usernameArray; // this will be used for listUsers
 
     function signUp(string memory username) public returns (bool) {
         require(Utils.isValidUsername(username), "Username is invalid");
         require(!usernames[username], "User already exists");
 
         User user = new User(username);
-        if (usernameArray.length() < Constants.MIN_LIST_USER)
+        if (usernameArray.length < Constants.MIN_LIST_USER)
             usernameArray.push(username);
         users[msg.sender] = user;
         usernameUserMapping[username] = user;
@@ -32,13 +27,15 @@ contract Tribbler {
     }
 
     function listUsers() public returns (string[] memory) {
-        return usernameArray.getStringHeap();
+        Utils.sort(usernameArray, 0, usernameArray.length - 1);
+        return usernameArray;
     }
 
     function post(string memory username, string memory _post)
         public
         returns (bool)
     {
+        // this function must remain `non-pure`
         require(
             bytes(_post).length < Constants.MAX_TRIB_LEN,
             "Post is too long"
@@ -82,6 +79,7 @@ contract Tribbler {
         public
         returns (bool)
     {
+        // this function must remain `non-pure`
         require(
             !Utils.whoWhomSame(who, whom),
             "Both the usernames are the same"
@@ -153,8 +151,10 @@ contract Tribbler {
 
             User followedUser = usernameUserMapping[followedUsername];
             Tribs.Trib[] memory followedUserTribs = followedUser.tribs();
-            homeList = Utils.mergeSortedArrays(homeList, followedUserTribs);
+            homeList = Utils.appendArray(homeList, followedUserTribs);
         }
+
+        Utils.sort(homeList, 0, homeList.length - 1);
 
         return homeList;
     }

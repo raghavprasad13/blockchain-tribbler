@@ -170,43 +170,138 @@ library Utils {
         for (uint256 i = 0; i < arr.length; i++) copy.push(arr[i]);
     }
 
-    function mergeSortedArrays(
-        Tribs.Trib[] memory arr1,
-        Tribs.Trib[] memory arr2
-    ) public pure returns (Tribs.Trib[] memory) {
-        uint256 n1 = arr1.length;
-        uint256 n2 = arr2.length;
+    function sort(
+        string[] storage arr,
+        uint256 startIndex,
+        uint256 endIndex
+    ) public {
+        if (startIndex < endIndex) {
+            uint256 mid = startIndex + (endIndex - 1) / 2;
+            sort(arr, startIndex, mid);
+            sort(arr, mid, endIndex);
+            merge(arr, startIndex, mid, endIndex);
+        }
+    }
 
-        Tribs.Trib[] memory resArr = new Tribs.Trib[](n1 + n2);
-
-        uint256 i;
-        uint256 j;
+    function merge(
+        string[] storage arr,
+        uint256 left,
+        uint256 mid,
+        uint256 right
+    ) public {
         uint256 k;
+        uint256 n1 = mid - left + 1;
+        uint256 n2 = right - mid;
 
-        while (i < n1 && j < n2) {
-            if (Tribs.compare(arr1[i], arr2[j]) == 1) {
-                resArr[k] = arr1[i];
-                k++;
-                i++;
+        string[] memory L = new string[](n1);
+        string[] memory R = new string[](n2);
+
+        for (uint256 i = 0; i < n1; i++) L[i] = arr[left + i];
+        for (uint256 i = 0; i < n2; i++) R[i] = arr[mid + left + i];
+
+        uint256 _i = 0;
+        uint256 _j = 0;
+        k = left;
+
+        while (_i < n1 && _j < n2) {
+            if (String.compare(L[_i], R[_j]) == 1) {
+                arr[k] = L[_i];
+                _i++;
             } else {
-                resArr[k] = arr2[j];
-                k++;
-                j++;
+                arr[k] = R[_j];
+                _j++;
             }
+            k++;
         }
 
-        while (i < n1) {
-            resArr[k] = arr1[i];
+        while (_i < n1) {
+            arr[k] = L[_i];
+            _i++;
             k++;
+        }
+
+        while (_j < n2) {
+            arr[k] = R[_j];
+            _j++;
+            k++;
+        }
+    }
+
+    function sort(
+        Tribs.Trib[] memory arr,
+        uint256 startIndex,
+        uint256 endIndex
+    ) public {
+        if (startIndex < endIndex) {
+            uint256 mid = startIndex + (endIndex - 1) / 2;
+            sort(arr, startIndex, mid);
+            sort(arr, mid, endIndex);
+            merge(arr, startIndex, mid, endIndex);
+        }
+    }
+
+    function merge(
+        Tribs.Trib[] memory arr,
+        uint256 left,
+        uint256 mid,
+        uint256 right
+    ) public pure {
+        uint256 k;
+        uint256 n1 = mid - left + 1;
+        uint256 n2 = right - mid;
+
+        Tribs.Trib[] memory L = new Tribs.Trib[](n1);
+        Tribs.Trib[] memory R = new Tribs.Trib[](n2);
+
+        for (uint256 i = 0; i < n1; i++) L[i] = arr[left + i];
+        for (uint256 i = 0; i < n2; i++) R[i] = arr[mid + left + i];
+
+        uint256 _i = 0;
+        uint256 _j = 0;
+        k = left;
+
+        while (_i < n1 && _j < n2) {
+            if (Tribs.compare(L[_i], R[_j]) == 1) {
+                arr[k] = L[_i];
+                _i++;
+            } else {
+                arr[k] = R[_j];
+                _j++;
+            }
+            k++;
+        }
+
+        while (_i < n1) {
+            arr[k] = L[_i];
+            _i++;
+            k++;
+        }
+
+        while (_j < n2) {
+            arr[k] = R[_j];
+            _j++;
+            k++;
+        }
+    }
+
+    function appendArray(Tribs.Trib[] memory arr1, Tribs.Trib[] memory arr2)
+        public
+        pure
+        returns (Tribs.Trib[] memory)
+    {
+        Tribs.Trib[] memory res = new Tribs.Trib[](arr1.length + arr2.length);
+
+        uint256 i;
+        for (i = 0; i < arr1.length; i++) {
+            res[i] = arr1[i];
+            if (i < arr2.length) res[i + arr1.length] = arr2[i];
+        }
+
+        while (i < arr2.length) {
+            res[i + arr1.length] = arr2[i];
             i++;
         }
 
-        while (j < n2) {
-            resArr[k] = arr2[j];
-            k++;
-            j++;
-        }
-
-        return resArr;
+        return res;
     }
 }
