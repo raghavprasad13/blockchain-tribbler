@@ -19,13 +19,13 @@ library Tribs {
         returns (int256)
     {
         // this returns:
-        // 1 if t1 < t2; i.e. t1 appears above t2
-        // -1 if t1 > t2; i.e. t2 appears above t1
-        // 0 if t1 = t2
+        // 1 if t1 > t2; i.e. t1 appears above t2
+        // -1 if t1 < t2; i.e. t2 appears above t1
+        // 0 if t1 == t2
 
         // Tribble order is:
         // Trib with higher block number appears on top; if equal
-        // Trib with higher tx gas price appears on top; if equal
+        // Trib with higher tx index number appears on top; if equal
         // Trib with higher timestamp appears on top; if equal
         // Trib with lexicographically first username appears on top; if equal
         // Trib with lexicographically first message appears on top; if equal
@@ -39,8 +39,8 @@ library Tribs {
         else if (t1.blockNum < t2.blockNum) return -1;
         else {
             // compare txIndex
-            if (t1.txIndex < t2.txIndex) return 1;
-            else if (t1.txIndex > t2.txIndex) return -1;
+            if (t1.txIndex > t2.txIndex) return 1;
+            else if (t1.txIndex < t2.txIndex) return -1;
             else {
                 // compare timestamp
                 if (t1.timestamp > t2.timestamp) return 1;
