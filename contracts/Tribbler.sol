@@ -13,7 +13,7 @@ contract Tribbler {
     mapping(string => bool) public usernames; // this will be used to check if users already exist
     string[] usernameArray; // this will be used for listUsers
 
-    function signUp(string memory username) public returns (bool) {
+    function signup(string memory username) public returns (bool) {
         require(Utils.isValidUsername(username), "Username is invalid");
         require(!usernames[username], "User already exists");
 
@@ -27,6 +27,7 @@ contract Tribbler {
     }
 
     function listUsers() public returns (string[] memory) {
+        require(usernameArray.length > 0, "No users exist");
         Utils.sort(usernameArray, 0, usernameArray.length - 1);
         return usernameArray;
     }
