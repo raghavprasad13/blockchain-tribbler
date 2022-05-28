@@ -3,9 +3,12 @@
 pragma solidity ^0.8.0;
 
 import "./Constants.sol";
+import "./String.sol";
 import "./Tribs.sol";
 
 library Utils {
+    /* Function to check if username parameters who and whom are same
+     */
     function whoWhomSame(string memory who, string memory whom)
         public
         pure
@@ -77,10 +80,11 @@ library Utils {
         returns (string[] memory)
     {
         uint256 size = arr.length;
-        require(index < size && size > 0, "ArrayIndexOutOfBounds");
+        require(size > 0, "EmptyArray");
+        require(index < size && index >= 0, "ArrayIndexOutOfBounds");
 
-        arr[index] = arr[size - 1];
-        arr.pop();
+        arr[index] = arr[size - 1]; // replace element at "index" with last element of array
+        arr.pop(); // remove last element of array
 
         return arr;
     }
@@ -90,7 +94,8 @@ library Utils {
         returns (Tribs.Trib[] memory)
     {
         uint256 size = arr.length;
-        require(index < size && size > 0, "ArrayIndexOutOfBounds");
+        require(size > 0, "EmptyArray");
+        require(index < size && index >= 0, "ArrayIndexOutOfBounds");
 
         arr[index] = arr[size - 1];
         arr.pop();
@@ -98,14 +103,17 @@ library Utils {
         return arr;
     }
 
+    // delete element at given index and shift all the other elements in the same order
     function deleteAtIndex(string[] storage arr, uint256 index)
         public
         returns (string[] memory)
     {
         uint256 size = arr.length;
-        require(index < size && size > 0, "ArrayIndexOutOfBounds");
+        require(size > 0, "EmptyArray");
+        require(index < size && index >= 0, "ArrayIndexOutOfBounds");
 
         for (uint256 i = index; i < size - 1; i++) {
+            // i goes till size-2 so that i+1 goes till size-1
             arr[i] = arr[i + 1];
         }
         arr.pop();
@@ -118,9 +126,11 @@ library Utils {
         returns (Tribs.Trib[] memory)
     {
         uint256 size = arr.length;
-        require(index < size && size > 0, "ArrayIndexOutOfBounds");
+        require(size > 0, "EmptyArray");
+        require(index < size && index >= 0, "ArrayIndexOutOfBounds");
 
         for (uint256 i = index; i < size - 1; i++) {
+            // i goes till size-2 so that i+1 goes till size-1
             arr[i] = arr[i + 1];
         }
         arr.pop();
@@ -145,6 +155,9 @@ library Utils {
         // This copies from "memory" string[] variable to "storage" string[] variable
         // Take care that copy is empty before passing it in here
 
+        // do we need a require here?
+        // require(copy.length == 0, "CopyArrayNotEmpty")
+
         for (uint256 i = 0; i < arr.length; i++) copy.push(arr[i]);
     }
 
@@ -167,6 +180,9 @@ library Utils {
         // This copies from "memory" Tribs.Trib[] variable to "storage" Tribs.Trib[] variable
         // Take care that copy is empty before passing it in here
 
+        // do we need a require here?
+        // require(copy.length == 0, "CopyArrayNotEmpty")
+
         for (uint256 i = 0; i < arr.length; i++) copy.push(arr[i]);
     }
 
@@ -176,7 +192,7 @@ library Utils {
         uint256 endIndex
     ) public {
         if (startIndex < endIndex) {
-            uint256 mid = startIndex + (endIndex - 1) / 2;
+            uint256 mid = (startIndex + (endIndex - 1)) / 2;
             sort(arr, startIndex, mid);
             sort(arr, mid, endIndex);
             merge(arr, startIndex, mid, endIndex);
@@ -227,13 +243,70 @@ library Utils {
         }
     }
 
+    // function sort(
+    //     string[] memory arr,
+    //     uint256 startIndex,
+    //     uint256 endIndex
+    // ) public {
+    //     if (startIndex < endIndex) {
+    //         uint256 mid = (startIndex + (endIndex - 1)) / 2;
+    //         sort(arr, startIndex, mid);
+    //         sort(arr, mid, endIndex);
+    //         merge(arr, startIndex, mid, endIndex);
+    //     }
+    // }
+
+    // function merge(
+    //     string[] memory arr,
+    //     uint256 left,
+    //     uint256 mid,
+    //     uint256 right
+    // ) public {
+    //     uint256 k;
+    //     uint256 n1 = mid - left + 1;
+    //     uint256 n2 = right - mid;
+
+    //     string[] memory L = new string[](n1);
+    //     string[] memory R = new string[](n2);
+
+    //     for (uint256 i = 0; i < n1; i++) L[i] = arr[left + i];
+    //     for (uint256 i = 0; i < n2; i++) R[i] = arr[mid + left + i];
+
+    //     uint256 _i = 0;
+    //     uint256 _j = 0;
+    //     k = left;
+
+    //     while (_i < n1 && _j < n2) {
+    //         if (String.compare(L[_i], R[_j]) == 1) {
+    //             arr[k] = L[_i];
+    //             _i++;
+    //         } else {
+    //             arr[k] = R[_j];
+    //             _j++;
+    //         }
+    //         k++;
+    //     }
+
+    //     while (_i < n1) {
+    //         arr[k] = L[_i];
+    //         _i++;
+    //         k++;
+    //     }
+
+    //     while (_j < n2) {
+    //         arr[k] = R[_j];
+    //         _j++;
+    //         k++;
+    //     }
+    // }
+
     function sort(
         Tribs.Trib[] memory arr,
         uint256 startIndex,
         uint256 endIndex
     ) public {
         if (startIndex < endIndex) {
-            uint256 mid = startIndex + (endIndex - 1) / 2;
+            uint256 mid = (startIndex + (endIndex - 1)) / 2;
             sort(arr, startIndex, mid);
             sort(arr, mid, endIndex);
             merge(arr, startIndex, mid, endIndex);
@@ -284,6 +357,7 @@ library Utils {
         }
     }
 
+    // Append one in-memory array to another
     function appendArray(Tribs.Trib[] memory arr1, Tribs.Trib[] memory arr2)
         public
         pure
