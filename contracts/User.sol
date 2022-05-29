@@ -5,6 +5,7 @@ pragma solidity ^0.8.0;
 // import "../Seriality/src/Seriality.sol";
 import "./Utils.sol";
 import "./String.sol";
+import "./Tribs.sol";
 
 contract User {
     struct FollowUnfollowLogItem {

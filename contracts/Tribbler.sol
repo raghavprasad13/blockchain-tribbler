@@ -26,9 +26,17 @@ contract Tribbler {
         return true;
     }
 
-    function listUsers() public returns (string[] memory) {
+    // why sort in place? sorting in place also makes a transaction
+    // function listUsers() public returns (string[] memory) {
+    //     require(usernameArray.length > 0, "No users exist");
+    //     Utils.sort(usernameArray, 0, usernameArray.length - 1);
+    //     return usernameArray;
+    // }
+
+    // Using below function instead of above one. Sorting in python scripts for now
+    function listUsers() public view returns (string[] memory) {
         require(usernameArray.length > 0, "No users exist");
-        Utils.sort(usernameArray, 0, usernameArray.length - 1);
+        // Utils.sort(usernameArray, 0, usernameArray.length - 1);
         return usernameArray;
     }
 
