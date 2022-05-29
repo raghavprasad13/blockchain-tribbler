@@ -194,7 +194,7 @@ library Utils {
         if (startIndex < endIndex) {
             uint256 mid = (startIndex + (endIndex - 1)) / 2;
             sort(arr, startIndex, mid);
-            sort(arr, mid, endIndex);
+            sort(arr, mid + 1, endIndex);
             merge(arr, startIndex, mid, endIndex);
         }
     }
@@ -308,7 +308,7 @@ library Utils {
         if (startIndex < endIndex) {
             uint256 mid = (startIndex + (endIndex - 1)) / 2;
             sort(arr, startIndex, mid);
-            sort(arr, mid, endIndex);
+            sort(arr, mid + 1, endIndex);
             merge(arr, startIndex, mid, endIndex);
         }
     }
