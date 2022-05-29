@@ -184,7 +184,10 @@ def test_post():
 #     #     return None
 
 #     tx_hash = tx.txid
-#     tx = tribbler.appendToFollowUnfollowLog(True, "u2", tx_hash)
+#     tx_hash = tx_hash[2:]
+#     # print(type(tx_hash), tx_hash)
+
+#     tx = tribbler.appendToFollowUnfollowLog(True, "u1", "u2", tx_hash)
 #     # tx.wait(1)
 
 #     tx = tribbler.followOrUnfollow("u1", "u3")
@@ -195,7 +198,8 @@ def test_post():
 #     #     return None
 
 #     tx_hash = tx.txid
-#     tx = tribbler.appendToFollowUnfollowLog(True, "u3", tx_hash)
+#     tx_hash = tx_hash[2:]
+#     tx = tribbler.appendToFollowUnfollowLog(True, "u1", "u3", tx_hash)
 #     # tx.wait(1)
 
 #     tx = tribbler.followOrUnfollow("u2", "u3")
@@ -206,15 +210,28 @@ def test_post():
 #     #     return None
 
 #     tx_hash = tx.txid
-#     tx = tribbler.appendToFollowUnfollowLog(True, "u3", tx_hash)
+#     tx_hash = tx_hash[2:]
+#     tx = tribbler.appendToFollowUnfollowLog(True, "u2", "u3", tx_hash)
 #     # tx.wait(1)
 
-#     tx = tribbler.following("u2")
+#     tx = tribbler.followOrUnfollow("u3", "u1")
+#     # tx.wait(1)
+#     # success = tx.return_value
+
+#     # if not success:
+#     #     return None
+
+#     tx_hash = tx.txid
+#     tx_hash = tx_hash[2:]
+#     tx = tribbler.appendToFollowUnfollowLog(True, "u3", "u1", tx_hash)
+#     # tx.wait(1)
+
+#     tx = tribbler.following("u1")
 #     # tx.wait(1)
 
 #     print(tx.return_value)
 
-#     assert tx.return_value == ["u2"]
+#     assert tx.return_value == ["u3"]
 
 
 # def test_unfollow():
