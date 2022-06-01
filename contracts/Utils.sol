@@ -378,4 +378,46 @@ library Utils {
 
         return res;
     }
+
+    function bubbleSort(Tribs.Trib[] storage arr) public {
+        uint256 i;
+        uint256 j;
+        uint256 n = arr.length;
+        Tribs.Trib memory temp;
+        for (i = 0; i < n; i++) {
+            for (j = 0; j < n - i - 1; j++) {
+                if (Tribs.compare(arr[j], arr[j + 1]) == -1) {
+                    // arr[j+1] should appear above arr[j]
+                    temp = arr[j];
+                    arr[j] = arr[j + 1];
+                    arr[j + 1] = temp;
+                }
+            }
+        }
+
+        // return arr;
+    }
+
+    function bubbleSort_memTribs(Tribs.Trib[] memory arr)
+        public
+        pure
+        returns (Tribs.Trib[] memory)
+    {
+        uint256 i;
+        uint256 j;
+        uint256 n = arr.length;
+        Tribs.Trib memory temp;
+        for (i = 0; i < n; i++) {
+            for (j = 0; j < n - i - 1; j++) {
+                if (Tribs.compare(arr[j], arr[j + 1]) == -1) {
+                    // arr[j+1] should appear above arr[j]
+                    temp = arr[j];
+                    arr[j] = arr[j + 1];
+                    arr[j + 1] = temp;
+                }
+            }
+        }
+
+        return arr;
+    }
 }

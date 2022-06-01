@@ -83,7 +83,7 @@ import time
 #     tribbler = Tribbler.deploy({"from": account})
 
 #     # act
-#     tribbler.signup("u1")
+#     tribbler.signup("u3")
 #     # tx.wait(1)
 #     # print(tx.return_value)
 
@@ -91,85 +91,112 @@ import time
 #     # tx.wait(1)
 #     # print(tx.return_value)
 
-#     tribbler.signup("u3")
+#     tribbler.signup("u1")
 #     # tx.wait(1)
 #     # print(tx.return_value)
 
 #     list_users = tribbler.listUsers()
 #     # print(list_users.info())
 
-#     assert sorted(list_users) == ["u1", "u2", "u3"]
+#     assert list_users.return_value == ["u1", "u2", "u3"]
 
 
-def test_post():
-    account = accounts[0]
+##### sort
+# def test_sort():
+#     account = accounts[0]
 
-    # arrange
-    String.deploy({"from": account})
-    Tribs.deploy({"from": account})
-    Utils.deploy({"from": account})
-    tribbler = Tribbler.deploy({"from": account})
+#     # arrange
+#     String.deploy({"from": account})
+#     Tribs.deploy({"from": account})
+#     Utils.deploy({"from": account})
+#     tribbler = Tribbler.deploy({"from": account})
 
-    # act
-    tribbler.signup("u1")
-    # tribbler.signup("u2")
-    # tribbler.signup("u3")
+#     # print(type(utils_obj), Utils, Utils[0].info())
+#     # print(utils_obj.abi)
 
-    who = "u1"
-    message = "testtrib1"
+#     # act
+#     test_arr = ["a", "p", "b", "q", "c", "r"]
+#     output = tribbler.bubbleSort(test_arr)
+#     # print(output)
 
-    tx = tribbler.post(who, message)
-    # tx.wait(1)
+#     expected_output = ["a", "b", "c", "p", "q", "r"]
 
-    tx_index = tx.txindex
-    timestamp = int(time.time())
-    block_num = tx.block_number
+#     # print(output.return_value)
 
-    tx = tribbler.addTrib(who, message, timestamp, block_num, tx_index)
-    # tx.wait(1)
+#     # assert
+#     assert output == expected_output
 
-    time.sleep(1)
 
-    who = "u1"
-    message = "testtrib2"
+# def test_post():
+#     account = accounts[0]
 
-    tx = tribbler.post(who, message)
-    # tx.wait(1)
+#     # arrange
+#     String.deploy({"from": account})
+#     Tribs.deploy({"from": account})
+#     Utils.deploy({"from": account})
+#     tribbler = Tribbler.deploy({"from": account})
 
-    tx_index = tx.txindex
-    timestamp = int(time.time())
-    block_num = tx.block_number
+#     # act
+#     tribbler.signup("u1")
+#     # tribbler.signup("u2")
+#     # tribbler.signup("u3")
 
-    tx = tribbler.addTrib(who, message, timestamp, block_num, tx_index)
-    # tx.wait(1)
+#     who = "u1"
+#     message = "testtrib1"
 
-    time.sleep(1)
+#     tx = tribbler.post(who, message)
+#     # tx.wait(1)
 
-    who = "u1"
-    message = "testtrib0"
+#     tx_index = tx.txindex
+#     timestamp = int(time.time())
+#     block_num = tx.block_number
 
-    tx = tribbler.post(who, message)
-    # tx.wait(1)
+#     tx = tribbler.addTrib(who, message, timestamp, block_num, tx_index)
+#     # tx.wait(1)
 
-    tx_index = tx.txindex
-    timestamp = int(time.time())
-    block_num = tx.block_number
+#     time.sleep(1)
 
-    tx = tribbler.addTrib(who, message, timestamp, block_num, tx_index)
-    # tx.wait(1)
+#     who = "u1"
+#     message = "testtrib2"
 
-    tx = tribbler.tribs(who)
-    # tx.wait(1)
+#     tx = tribbler.post(who, message)
+#     # tx.wait(1)
 
-    print(tx.return_value)
+#     tx_index = tx.txindex
+#     timestamp = int(time.time())
+#     block_num = tx.block_number
 
-    listTribs = [trib_obj[1] for trib_obj in tx.return_value]
+#     tx = tribbler.addTrib(who, message, timestamp, block_num, tx_index)
+#     # tx.wait(1)
 
-    assert listTribs == [
-        "testtrib0",
-        "testtrib2",
-        "testtrib1",
-    ]  # posting order was 1,2,0 so listing should be in reverse sorted order i.e. 0,2,1
+#     time.sleep(1)
+
+#     who = "u1"
+#     message = "testtrib0"
+
+#     tx = tribbler.post(who, message)
+#     # tx.wait(1)
+
+#     tx_index = tx.txindex
+#     timestamp = int(time.time())
+#     block_num = tx.block_number
+
+#     tx = tribbler.addTrib(who, message, timestamp, block_num, tx_index)
+#     # tx.wait(1)
+
+#     who = "u1"
+#     tx = tribbler.tribs(who)
+#     # tx.wait(1)
+
+#     print(tx.return_value)
+
+#     listTribs = [trib_obj[1] for trib_obj in tx.return_value]
+
+#     assert listTribs == [
+#         "testtrib0",
+#         "testtrib2",
+#         "testtrib1",
+#     ]  # posting order was 1,2,0 so listing should be in reverse sorted order i.e. 0,2,1
 
 
 def test_home():

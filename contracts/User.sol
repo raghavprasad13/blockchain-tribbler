@@ -35,7 +35,7 @@ contract User {
 
     function tribs() public returns (Tribs.Trib[] memory) {
         uint256 numberOfTribs = _tribs.length;
-        Utils.sort(_tribs, 0, _tribs.length - 1);
+        Utils.bubbleSort(_tribs);
         if (numberOfTribs > Constants.MAX_TRIB_FETCH) {
             uint256 numTribsToDelete = numberOfTribs - Constants.MAX_TRIB_FETCH;
             for (uint256 i = 0; i < numTribsToDelete; i++) {
@@ -44,6 +44,8 @@ contract User {
         }
 
         return _tribs;
+        // Tribs.Trib[] memory mem_tribs = _tribs;
+        // return mem_tribs;
     }
 
     function appendToFollowUnfollowLog(
