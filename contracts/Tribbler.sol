@@ -104,11 +104,12 @@ contract Tribbler {
 
     function appendToFollowUnfollowLog(
         bool isFollow,
-        // string memory who,
+        string memory who,
         string memory whom,
         string memory txHash
     ) public returns (bool) {
-        User user = users[msg.sender];
+        // User user = users[msg.sender];
+        User user = usernameUserMapping[who];
         return user.appendToFollowUnfollowLog(isFollow, whom, txHash);
     }
 
@@ -126,7 +127,8 @@ contract Tribbler {
         );
         require(usernames[who] && usernames[whom], "User does not exist");
 
-        User user = users[msg.sender];
+        // User user = users[msg.sender];
+        User user = usernameUserMapping[who];
         return user.isFollowing(whom);
     }
 
@@ -137,7 +139,8 @@ contract Tribbler {
         require(Utils.isValidUsername(username), "Username is invalid");
         require(usernames[username], "User does not exist");
 
-        User user = users[msg.sender];
+        // User user = users[msg.sender];
+        User user = usernameUserMapping[username];
         return user.following();
     }
 

@@ -199,78 +199,81 @@ import time
 #     ]  # posting order was 1,2,0 so listing should be in reverse sorted order i.e. 0,2,1
 
 
-def test_home():
-    account = accounts[0]
+# def test_home():
+#     account = accounts[0]
 
-    # arrange
-    String.deploy({"from": account})
-    Tribs.deploy({"from": account})
-    Utils.deploy({"from": account})
-    tribbler = Tribbler.deploy({"from": account})
+#     # arrange
+#     String.deploy({"from": account})
+#     Tribs.deploy({"from": account})
+#     Utils.deploy({"from": account})
+#     tribbler = Tribbler.deploy({"from": account})
 
-    # act
-    tribbler.signup("u1")
-    # tribbler.signup("u2")
-    # tribbler.signup("u3")
+#     # act
+#     tribbler.signup("u1")
+#     # tribbler.signup("u2")
+#     # tribbler.signup("u3")
 
-    who = "u1"
-    message = "testtrib1"
+#     who = "u1"
+#     message = "testtrib1"
 
-    tx = tribbler.post(who, message)
-    # tx.wait(1)
+#     tx = tribbler.post(who, message)
+#     # tx.wait(1)
 
-    tx_index = tx.txindex
-    timestamp = int(time.time())
-    block_num = tx.block_number
+#     tx_index = tx.txindex
+#     timestamp = int(time.time())
+#     block_num = tx.block_number
 
-    tx = tribbler.addTrib(who, message, timestamp, block_num, tx_index)
-    # tx.wait(1)
+#     tx = tribbler.addTrib(who, message, timestamp, block_num, tx_index)
+#     # tx.wait(1)
 
-    time.sleep(1)
+#     time.sleep(1)
 
-    who = "u1"
-    message = "testtrib2"
+#     who = "u1"
+#     message = "testtrib2"
 
-    tx = tribbler.post(who, message)
-    # tx.wait(1)
+#     tx = tribbler.post(who, message)
+#     # tx.wait(1)
 
-    tx_index = tx.txindex
-    timestamp = int(time.time())
-    block_num = tx.block_number
+#     tx_index = tx.txindex
+#     timestamp = int(time.time())
+#     block_num = tx.block_number
 
-    tx = tribbler.addTrib(who, message, timestamp, block_num, tx_index)
-    # tx.wait(1)
+#     tx = tribbler.addTrib(who, message, timestamp, block_num, tx_index)
+#     # tx.wait(1)
 
-    time.sleep(1)
+#     time.sleep(1)
 
-    who = "u1"
-    message = "testtrib0"
+#     who = "u1"
+#     message = "testtrib0"
 
-    tx = tribbler.post(who, message)
-    # tx.wait(1)
+#     tx = tribbler.post(who, message)
+#     # tx.wait(1)
 
-    tx_index = tx.txindex
-    timestamp = int(time.time())
-    block_num = tx.block_number
+#     tx_index = tx.txindex
+#     timestamp = int(time.time())
+#     block_num = tx.block_number
 
-    tx = tribbler.addTrib(who, message, timestamp, block_num, tx_index)
-    # tx.wait(1)
+#     tx = tribbler.addTrib(who, message, timestamp, block_num, tx_index)
+#     # tx.wait(1)
 
-    tx = tribbler.home(who)
-    # tx.wait(1)
+#     tx = tribbler.home(who)
+#     # tx.wait(1)
 
-    print(tx.return_value)
+#     print(tx.return_value)
 
-    listTribs = [trib_obj[1] for trib_obj in tx.return_value]
+#     listTribs = [trib_obj[1] for trib_obj in tx.return_value]
 
-    assert listTribs == [
-        "testtrib0",
-        "testtrib2",
-        "testtrib1",
-    ]  # posting order was 1,2,0 so listing should be in reverse sorted order i.e. 0,2,1
+#     assert listTribs == [
+#         "testtrib0",
+#         "testtrib2",
+#         "testtrib1",
+#     ]  # posting order was 1,2,0 so listing should be in reverse sorted order i.e. 0,2,1
 
 
-# def test_follow():
+# TODO: test post and tribs with multiple users
+
+
+# def test_follow_following():
 #     account = accounts[0]
 
 #     # arrange
@@ -284,7 +287,9 @@ def test_home():
 #     tribbler.signup("u2")
 #     tribbler.signup("u3")
 
-#     tx = tribbler.followOrUnfollow("u1", "u2")
+#     who = "u1"
+#     whom = "u2"
+#     tx = tribbler.followOrUnfollow(who, whom)
 #     # tx.wait(1)
 #     # success = tx.return_value
 
@@ -295,22 +300,12 @@ def test_home():
 #     tx_hash = tx_hash[2:]
 #     # print(type(tx_hash), tx_hash)
 
-#     tx = tribbler.appendToFollowUnfollowLog(True, "u1", "u2", tx_hash)
+#     tx = tribbler.appendToFollowUnfollowLog(True, who, whom, tx_hash)
 #     # tx.wait(1)
 
-#     tx = tribbler.followOrUnfollow("u1", "u3")
-#     # tx.wait(1)
-#     # success = tx.return_value
-
-#     # if not success:
-#     #     return None
-
-#     tx_hash = tx.txid
-#     tx_hash = tx_hash[2:]
-#     tx = tribbler.appendToFollowUnfollowLog(True, "u1", "u3", tx_hash)
-#     # tx.wait(1)
-
-#     tx = tribbler.followOrUnfollow("u2", "u3")
+#     who = "u1"
+#     whom = "u3"
+#     tx = tribbler.followOrUnfollow(who, whom)
 #     # tx.wait(1)
 #     # success = tx.return_value
 
@@ -319,10 +314,14 @@ def test_home():
 
 #     tx_hash = tx.txid
 #     tx_hash = tx_hash[2:]
-#     tx = tribbler.appendToFollowUnfollowLog(True, "u2", "u3", tx_hash)
+#     # print(type(tx_hash), tx_hash)
+
+#     tx = tribbler.appendToFollowUnfollowLog(True, who, whom, tx_hash)
 #     # tx.wait(1)
 
-#     tx = tribbler.followOrUnfollow("u3", "u1")
+#     who = "u2"
+#     whom = "u3"
+#     tx = tribbler.followOrUnfollow(who, whom)
 #     # tx.wait(1)
 #     # success = tx.return_value
 
@@ -331,19 +330,260 @@ def test_home():
 
 #     tx_hash = tx.txid
 #     tx_hash = tx_hash[2:]
-#     tx = tribbler.appendToFollowUnfollowLog(True, "u3", "u1", tx_hash)
+#     # print(type(tx_hash), tx_hash)
+
+#     tx = tribbler.appendToFollowUnfollowLog(True, who, whom, tx_hash)
 #     # tx.wait(1)
 
-#     tx = tribbler.following("u1")
+#     who = "u2"
+#     whom = "u1"
+#     tx = tribbler.followOrUnfollow(who, whom)
+#     # tx.wait(1)
+#     # success = tx.return_value
+
+#     # if not success:
+#     #     return None
+
+#     tx_hash = tx.txid
+#     tx_hash = tx_hash[2:]
+#     # print(type(tx_hash), tx_hash)
+
+#     tx = tribbler.appendToFollowUnfollowLog(True, who, whom, tx_hash)
+#     # tx.wait(1)
+
+#     username = "u2"
+#     tx = tribbler.following(username)
 #     # tx.wait(1)
 
 #     print(tx.return_value)
 
-#     assert tx.return_value == ["u3"]
+#     assert tx.return_value == ["u3", "u1"]
 
 
-# def test_unfollow():
-#     pass
+# def test_follow():
+#     account = accounts[0]
+
+#     # arrange
+#     String.deploy({"from": account})
+#     Tribs.deploy({"from": account})
+#     Utils.deploy({"from": account})
+#     tribbler = Tribbler.deploy({"from": account})
+
+#     # act
+#     tribbler.signup("u1")
+
+#     with reverts("User does not exist"):
+#         who = "u1"
+#         whom = "u2"
+#         tribbler.followOrUnfollow(who, whom)
+
+#     with reverts("Username is invalid"):
+#         who = "u1"
+#         whom = "2u"
+#         tribbler.followOrUnfollow(who, whom)
+
+#     with reverts("Both the usernames are the same"):
+#         who = "u1"
+#         whom = "u1"
+#         tribbler.followOrUnfollow(who, whom)
+
+
+def test_follow_unfollow_allOps():
+    account = accounts[0]
+
+    # arrange
+    String.deploy({"from": account})
+    Tribs.deploy({"from": account})
+    Utils.deploy({"from": account})
+    tribbler = Tribbler.deploy({"from": account})
+
+    # act
+    tribbler.signup("u1")
+    tribbler.signup("u2")
+    tribbler.signup("u3")
+    tribbler.signup("u4")
+
+    who = "u1"
+    whom = "u2"
+    tx = tribbler.followOrUnfollow(who, whom)
+    # tx.wait(1)
+    # success = tx.return_value
+
+    # if not success:
+    #     return None
+
+    tx_hash = tx.txid
+    tx_hash = tx_hash[2:]
+    # print(type(tx_hash), tx_hash)
+
+    tx = tribbler.appendToFollowUnfollowLog(True, who, whom, tx_hash)
+    # tx.wait(1)
+
+    who = "u1"
+    whom = "u3"
+    tx = tribbler.followOrUnfollow(who, whom)
+    # tx.wait(1)
+    # success = tx.return_value
+
+    # if not success:
+    #     return None
+
+    tx_hash = tx.txid
+    tx_hash = tx_hash[2:]
+    # print(type(tx_hash), tx_hash)
+
+    tx = tribbler.appendToFollowUnfollowLog(True, who, whom, tx_hash)
+    # tx.wait(1)
+
+    who = "u2"
+    whom = "u3"
+    tx = tribbler.followOrUnfollow(who, whom)
+    # tx.wait(1)
+    # success = tx.return_value
+
+    # if not success:
+    #     return None
+
+    tx_hash = tx.txid
+    tx_hash = tx_hash[2:]
+    # print(type(tx_hash), tx_hash)
+
+    tx = tribbler.appendToFollowUnfollowLog(True, who, whom, tx_hash)
+    # tx.wait(1)
+
+    who = "u2"
+    whom = "u1"
+    tx = tribbler.followOrUnfollow(who, whom)
+    # tx.wait(1)
+    # success = tx.return_value
+
+    # if not success:
+    #     return None
+
+    tx_hash = tx.txid
+    tx_hash = tx_hash[2:]
+    # print(type(tx_hash), tx_hash)
+
+    tx = tribbler.appendToFollowUnfollowLog(True, who, whom, tx_hash)
+    # tx.wait(1)
+
+    who = "u2"
+    whom = "u4"
+    tx = tribbler.followOrUnfollow(who, whom)
+    # tx.wait(1)
+    # success = tx.return_value
+
+    # if not success:
+    #     return None
+
+    tx_hash = tx.txid
+    tx_hash = tx_hash[2:]
+    # print(type(tx_hash), tx_hash)
+
+    tx = tribbler.appendToFollowUnfollowLog(True, who, whom, tx_hash)
+    # tx.wait(1)
+
+    who = "u2"
+    whom = "u1"
+    tx = tribbler.followOrUnfollow(who, whom)
+    # tx.wait(1)
+    # success = tx.return_value
+
+    # if not success:
+    #     return None
+
+    tx_hash = tx.txid
+    tx_hash = tx_hash[2:]
+    # print(type(tx_hash), tx_hash)
+
+    tx = tribbler.appendToFollowUnfollowLog(True, who, whom, tx_hash)
+    # tx.wait(1)
+
+    assert tx.return_value == False  # already following
+
+    who = "u2"
+    whom = "u3"
+    tx = tribbler.followOrUnfollow(who, whom)
+    # tx.wait(1)
+    # success = tx.return_value
+
+    # if not success:
+    #     return None
+
+    tx_hash = tx.txid
+    tx_hash = tx_hash[2:]
+    # print(type(tx_hash), tx_hash)
+
+    tx = tribbler.appendToFollowUnfollowLog(False, who, whom, tx_hash)
+    # tx.wait(1)
+
+    who = "u2"
+    whom = "u3"
+    tx = tribbler.followOrUnfollow(who, whom)
+    # tx.wait(1)
+    # success = tx.return_value
+
+    # if not success:
+    #     return None
+
+    tx_hash = tx.txid
+    tx_hash = tx_hash[2:]
+    # print(type(tx_hash), tx_hash)
+
+    tx = tribbler.appendToFollowUnfollowLog(False, who, whom, tx_hash)
+    # tx.wait(1)
+
+    assert tx.return_value == False  # already unfollowed
+
+    username = "u2"
+    tx = tribbler.following(username)
+    # tx.wait(1)
+
+    # print(tx.return_value)
+
+    assert tx.return_value == ["u4", "u1"]
+
+    who = "u1"
+    whom = "u2"
+    tx = tribbler.followOrUnfollow(who, whom)
+    # tx.wait(1)
+    # success = tx.return_value
+
+    # if not success:
+    #     return None
+
+    tx_hash = tx.txid
+    tx_hash = tx_hash[2:]
+    # print(type(tx_hash), tx_hash)
+
+    tx = tribbler.appendToFollowUnfollowLog(False, who, whom, tx_hash)
+
+    who = "u1"
+    whom = "u2"
+    tx = tribbler.isFollowing(who, whom)
+    # tx.wait(1)
+
+    # print(tx.return_value)
+
+    assert tx.return_value == False
+
+    who = "u1"
+    whom = "u3"
+    tx = tribbler.following(who)
+    # tx.wait(1)
+
+    print(tx.return_value)
+
+    assert tx.return_value == ["u3"]
+
+    who = "u1"
+    whom = "u3"
+    tx = tribbler.isFollowing(who, whom)
+    # tx.wait(1)
+
+    # print(tx.return_value)
+
+    assert tx.return_value == True
 
 
 # def test_isFollowing():
