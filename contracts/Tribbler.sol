@@ -69,7 +69,7 @@ contract Tribbler {
             txIndex
         );
 
-        User user = users[msg.sender];
+        User user = usernameUserMapping[username];
         return user.post(trib);
     }
 
@@ -80,7 +80,7 @@ contract Tribbler {
         require(Utils.isValidUsername(username), "Username is invalid");
         require(usernames[username], "User does not exist");
 
-        User user = users[msg.sender];
+        User user = usernameUserMapping[username];
         return user.tribs();
     }
 
@@ -148,7 +148,7 @@ contract Tribbler {
         require(Utils.isValidUsername(username), "Username is invalid");
         require(usernames[username], "User does not exist");
 
-        User user = users[msg.sender];
+        User user = usernameUserMapping[username];
 
         // get own tribs first
         Tribs.Trib[] memory homeList = user.tribs();
