@@ -1,5 +1,7 @@
+from ctypes import util
 from typing import List
 import time
+
 from brownie import (
     accounts,
     config,
@@ -10,17 +12,38 @@ from brownie import (
     String,
     network,
 )
+import subprocess
 
 
 class TribblerMain:
-    def __init__(self, account):
+    def __init__(
+        self,
+        account,
+        stringContractAddr=None,
+        tribsContractAddr=None,
+        utilsContractAddr=None,
+        tribblerContractAddr=None,
+    ):
         self.account = account
 
-        String.deploy({"from": self.account})
-        Tribs.deploy({"from": self.account})
-        Utils.deploy({"from": self.account})
+        if tribblerContractAddr is not None:
+            self.stringContract = String.at(stringContractAddr, {"from": self.account})
+            self.tribsContract = Tribs.at(tribsContractAddr, {"from": self.account})
+            self.utilsContract = Utils.at(utilsContractAddr, {"from": self.account})
+            self.contract = Tribbler.at(tribblerContractAddr, {"from": self.account})
+        else:
+            self.stringContract = String.deploy({"from": self.account})
+            self.tribsContract = Tribs.deploy({"from": self.account})
+            self.utilsContract = Utils.deploy({"from": self.account})
+            self.contract = Tribbler.deploy({"from": self.account})
 
-        self.contract = Tribbler.deploy({"from": self.account})
+    def getContractAddresses(self):
+        return {
+            "String_contract": self.stringContract.address,
+            "Tribs_contract": self.tribsContract.address,
+            "Utils_contract": self.utilsContract.address,
+            "Tribbler_contract": self.contract.address,
+        }
 
     def followTx(self, who: str, whom: str) -> network.transaction.TransactionReceipt:
         return self.followOrUnfollowTx(True, who, whom)
@@ -72,7 +95,7 @@ class TribblerMain:
     def listUsersTx(self) -> List[str]:
         tx = self.contract.listUsers()
 
-        return tx.return_value
+        return sorted(tx.return_value)
 
     def tribsTx(self, username: str) -> network.transaction.TransactionReceipt:
         tx = self.contract.tribs(username)
@@ -99,15 +122,36 @@ class TribblerMain:
         return tx
 
 
-def deploy_tribbler():
-    tribbler = TribblerMain(accounts[0])
-    tribbler.signupTx("raghav")
-    tribbler.signupTx("harsh")
+# def deploy_tribbler():
+#     tribbler = TribblerMain(accounts[0])
 
-    tribbler.postTx("raghav", "testtrib1")
-    print(tribbler.tribsTx("raghav").return_value)
-    # tribbler.followTx("raghav", "harsh")
+#     # import os
+
+#     # pwd = os.getcwd()
+#     # print(pwd)
+
+#     # p1 = subprocess.Popen(
+#     #     "{}/blockchain-tribbler-venv/bin/python {}/scripts/deploy1.py {}".format(
+#     #         pwd, pwd, tribbler.getContractAddress()
+#     #     ),
+#     #     shell=True,
+#     # )
+#     # subprocess.Popen("python3 deploy2.py", shell=True)
+
+#     import time
+
+#     time.sleep(120)
+
+#     # p1.wait()
+
+#     print(tribbler.listUsersTx())
+
+#     print("Ending...")
 
 
-def main():
-    deploy_tribbler()
+# def main():
+#     deploy_tribbler()
+
+
+# if __name__ == "__main__":
+#     main()

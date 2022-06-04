@@ -1,159 +1,159 @@
 from brownie import Utils, String, Tribs, accounts
 
 
-def test_whoWhomSame1():
-    account = accounts[0]
+# def test_whoWhomSame1():
+#     account = accounts[0]
 
-    # arrange
-    String.deploy({"from": account})
-    Tribs.deploy({"from": account})
-    utils_obj = Utils.deploy({"from": account})
+#     # arrange
+#     String.deploy({"from": account})
+#     Tribs.deploy({"from": account})
+#     utils_obj = Utils.deploy({"from": account})
 
-    # act
-    who = "abc"
-    whom = "abc"
-    output = utils_obj.whoWhomSame(who, whom)
-    expected_output = True
+#     # act
+#     who = "abc"
+#     whom = "abc"
+#     output = utils_obj.whoWhomSame(who, whom)
+#     expected_output = True
 
-    # assert
-    assert output == expected_output
-
-
-def test_whoWhomSame2():
-    account = accounts[0]
-
-    # arrange
-    String.deploy({"from": account})
-    Tribs.deploy({"from": account})
-    utils_obj = Utils.deploy({"from": account})
-
-    # act
-    who = "abc"
-    whom = "def"
-    output = utils_obj.whoWhomSame(who, whom)
-    expected_output = False
-
-    # assert
-    assert output == expected_output
+#     # assert
+#     assert output == expected_output
 
 
-def test_isValidUsername1():
-    account = accounts[0]
+# def test_whoWhomSame2():
+#     account = accounts[0]
 
-    # arrange
-    String.deploy({"from": account})
-    Tribs.deploy({"from": account})
-    utils_obj = Utils.deploy({"from": account})
+#     # arrange
+#     String.deploy({"from": account})
+#     Tribs.deploy({"from": account})
+#     utils_obj = Utils.deploy({"from": account})
 
-    # act
-    test_username = "u1"
-    isValid_output = utils_obj.isValidUsername(test_username)
-    expected_isValid_output = True
+#     # act
+#     who = "abc"
+#     whom = "def"
+#     output = utils_obj.whoWhomSame(who, whom)
+#     expected_output = False
 
-    # assert
-    assert isValid_output == expected_isValid_output
-
-
-def test_isValidUsername2():
-    account = accounts[0]
-
-    # arrange
-    String.deploy({"from": account})
-    Tribs.deploy({"from": account})
-    utils_obj = Utils.deploy({"from": account})
-
-    # act
-    test_username = "1fefklrgwfcklrgm"
-    isValid_output = utils_obj.isValidUsername(test_username)
-    expected_isValid_output = False
-
-    # assert
-    assert isValid_output == expected_isValid_output
+#     # assert
+#     assert output == expected_output
 
 
-def test_isValidUsername3():
-    account = accounts[0]
+# def test_isValidUsername1():
+#     account = accounts[0]
 
-    # arrange
-    String.deploy({"from": account})
-    Tribs.deploy({"from": account})
-    utils_obj = Utils.deploy({"from": account})
+#     # arrange
+#     String.deploy({"from": account})
+#     Tribs.deploy({"from": account})
+#     utils_obj = Utils.deploy({"from": account})
 
-    # act
-    test_username = "u1Tfdnrejknfg"
-    isValid_output = utils_obj.isValidUsername(test_username)
-    expected_isValid_output = False
+#     # act
+#     test_username = "u1"
+#     isValid_output = utils_obj.isValidUsername(test_username)
+#     expected_isValid_output = True
 
-    # assert
-    assert isValid_output == expected_isValid_output
-
-
-def test_exists1():
-    account = accounts[0]
-
-    # arrange
-    String.deploy({"from": account})
-    Tribs.deploy({"from": account})
-    utils_obj = Utils.deploy({"from": account})
-
-    # act
-    test_arr = ["a", "p", "b", "q", "c", "r"]
-    output = utils_obj.exists(test_arr, "q")
-    expected_output = True
-
-    # assert
-    assert output == expected_output
+#     # assert
+#     assert isValid_output == expected_isValid_output
 
 
-def test_exists2():
-    account = accounts[0]
+# def test_isValidUsername2():
+#     account = accounts[0]
 
-    # arrange
-    String.deploy({"from": account})
-    Tribs.deploy({"from": account})
-    utils_obj = Utils.deploy({"from": account})
+#     # arrange
+#     String.deploy({"from": account})
+#     Tribs.deploy({"from": account})
+#     utils_obj = Utils.deploy({"from": account})
 
-    # act
-    test_arr = []
-    output = utils_obj.exists(test_arr, "a")
-    expected_output = False
+#     # act
+#     test_username = "1fefklrgwfcklrgm"
+#     isValid_output = utils_obj.isValidUsername(test_username)
+#     expected_isValid_output = False
 
-    # assert
-    assert output == expected_output
-
-
-def test_getIndex1():
-    account = accounts[0]
-
-    # arrange
-    String.deploy({"from": account})
-    Tribs.deploy({"from": account})
-    utils_obj = Utils.deploy({"from": account})
-
-    # act
-    test_arr = ["a", "p", "b", "q", "c", "r"]
-    output = utils_obj.getIndex(test_arr, "r")
-    expected_output = 5
-
-    # assert
-    assert output == expected_output
+#     # assert
+#     assert isValid_output == expected_isValid_output
 
 
-def test_getIndex2():
-    account = accounts[0]
+# def test_isValidUsername3():
+#     account = accounts[0]
 
-    # arrange
-    String.deploy({"from": account})
-    Tribs.deploy({"from": account})
-    utils_obj = Utils.deploy({"from": account})
+#     # arrange
+#     String.deploy({"from": account})
+#     Tribs.deploy({"from": account})
+#     utils_obj = Utils.deploy({"from": account})
 
-    # act
-    test_arr = ["a", "p", "b", "q", "c", "r"]
-    output = utils_obj.getIndex(test_arr, "z")
-    expected_output = -1
+#     # act
+#     test_username = "u1Tfdnrejknfg"
+#     isValid_output = utils_obj.isValidUsername(test_username)
+#     expected_isValid_output = False
 
-    # assert
-    assert output == expected_output
+#     # assert
+#     assert isValid_output == expected_isValid_output
+
+
+# def test_exists1():
+#     account = accounts[0]
+
+#     # arrange
+#     String.deploy({"from": account})
+#     Tribs.deploy({"from": account})
+#     utils_obj = Utils.deploy({"from": account})
+
+#     # act
+#     test_arr = ["a", "p", "b", "q", "c", "r"]
+#     output = utils_obj.exists(test_arr, "q")
+#     expected_output = True
+
+#     # assert
+#     assert output == expected_output
+
+
+# def test_exists2():
+#     account = accounts[0]
+
+#     # arrange
+#     String.deploy({"from": account})
+#     Tribs.deploy({"from": account})
+#     utils_obj = Utils.deploy({"from": account})
+
+#     # act
+#     test_arr = []
+#     output = utils_obj.exists(test_arr, "a")
+#     expected_output = False
+
+#     # assert
+#     assert output == expected_output
+
+
+# def test_getIndex1():
+#     account = accounts[0]
+
+#     # arrange
+#     String.deploy({"from": account})
+#     Tribs.deploy({"from": account})
+#     utils_obj = Utils.deploy({"from": account})
+
+#     # act
+#     test_arr = ["a", "p", "b", "q", "c", "r"]
+#     output = utils_obj.getIndex(test_arr, "r")
+#     expected_output = 5
+
+#     # assert
+#     assert output == expected_output
+
+
+# def test_getIndex2():
+#     account = accounts[0]
+
+#     # arrange
+#     String.deploy({"from": account})
+#     Tribs.deploy({"from": account})
+#     utils_obj = Utils.deploy({"from": account})
+
+#     # act
+#     test_arr = ["a", "p", "b", "q", "c", "r"]
+#     output = utils_obj.getIndex(test_arr, "z")
+#     expected_output = -1
+
+#     # assert
+#     assert output == expected_output
 
 
 ##### deleteAtIndexUnordered
@@ -165,15 +165,17 @@ def test_getIndex2():
 #     Tribs.deploy({"from": account})
 #     utils_obj = Utils.deploy({"from": account})
 
+#     print(utils_obj)
 #     print(type(utils_obj))
 
 #     # act
 #     test_arr = ["a", "p", "b", "q", "c", "r"]
-#     output = utils_obj.deleteAtIndexUnordered(test_arr, 2, {"from": account})
+#     output = utils_obj.deleteAtIndexUnordered(test_arr, 2)
+
 #     expected_output = ["a", "p", "r", "q", "c"]
 
 #     # assert
-#     assert output == expected_output
+#     assert output.return_value == expected_output
 
 
 # def test_deleteAtIndexUnordered2():
@@ -217,9 +219,47 @@ def test_getIndex2():
 
 
 ##### sort
+# def test_sort():
+#     account = accounts[0]
+
+#     # arrange
+#     String.deploy({"from": account})
+#     Tribs.deploy({"from": account})
+#     utils_obj = Utils.deploy({"from": account})
+
+#     # print(type(utils_obj), Utils, Utils[0].info())
+#     print(utils_obj.abi)
+
+#     # act
+#     test_arr = ["a", "p", "b", "q", "c", "r"]
+#     output = utils_obj.sort.call(
+#         test_arr, 0, len(test_arr) - 1, {"from": account, "arr": test_arr}
+#     )
+
+#     expected_output = ["a", "b", "c", "p", "q", "r"]
+
+#     # assert
+#     assert output.return_value == expected_output
 
 
 ##### merge
 
 
 ##### appendArray
+
+
+### test
+# def test_test():
+#     account = accounts[0]
+
+#     # arrange
+#     String.deploy({"from": account})
+#     Tribs.deploy({"from": account})
+#     utils_obj = Utils.deploy({"from": account})
+
+#     # print(type(utils_obj), Utils, Utils[0].info())
+
+#     test_bool = utils_obj.test()
+#     print(test_bool)
+
+#     assert test_bool == True
