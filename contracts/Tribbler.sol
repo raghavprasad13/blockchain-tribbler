@@ -34,9 +34,9 @@ contract Tribbler {
     // }
 
     // Using below function instead of above one. Sorting in python scripts for now
-    function listUsers() public returns (string[] memory) {
+    function listUsers() public view returns (string[] memory) {
         require(usernameArray.length > 0, "No users exist");
-        usernameArray = bubbleSort(usernameArray);
+        //usernameArray = bubbleSort(usernameArray); // sorting takes too much time
         return usernameArray;
     }
 
@@ -168,7 +168,15 @@ contract Tribbler {
 
         homeList = Utils.bubbleSort_memTribs(homeList);
 
-        return homeList;
+        // return only top MAX_TRIB_FETCH tribs
+        Tribs.Trib[] memory returnHomeList = new Tribs.Trib[](
+            Constants.MAX_TRIB_FETCH
+        );
+        for (uint256 i = 0; i < Constants.MAX_TRIB_FETCH; i++) {
+            returnHomeList[i] = homeList[i];
+        }
+
+        return returnHomeList;
     }
 
     // function sort(
