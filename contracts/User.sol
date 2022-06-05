@@ -33,15 +33,15 @@ contract User {
         return true;
     }
 
-    function tribs() public returns (Tribs.Trib[] memory) {
-        uint256 numberOfTribs = _tribs.length;
-        Utils.bubbleSort(_tribs);
-        if (numberOfTribs > Constants.MAX_TRIB_FETCH) {
-            uint256 numTribsToDelete = numberOfTribs - Constants.MAX_TRIB_FETCH;
-            for (uint256 i = 0; i < numTribsToDelete; i++) {
-                _tribs.pop();
-            }
-        }
+    function tribs() public view returns (Tribs.Trib[] memory) {
+        // uint256 numberOfTribs = _tribs.length;
+        // Utils.bubbleSort(_tribs);
+        // if (numberOfTribs > Constants.MAX_TRIB_FETCH) {
+        //     uint256 numTribsToDelete = numberOfTribs - Constants.MAX_TRIB_FETCH;
+        //     for (uint256 i = 0; i < numTribsToDelete; i++) {
+        //         _tribs.pop();
+        //     }
+        // }
 
         return _tribs;
         // Tribs.Trib[] memory mem_tribs = _tribs;
@@ -113,36 +113,38 @@ contract User {
         return true;
     }
 
-    function isFollowing(string memory otherUser) public returns (bool) {
-        string[] memory followingList = following();
-        return Utils.exists(followingList, otherUser);
-    }
+    // function isFollowing(string memory otherUser) public returns (bool) {
+    //     string[] memory followingList = following();
+    //     return Utils.exists(followingList, otherUser);
+    // }
 
-    function following() public returns (string[] memory) {
-        delete _following;
+    function following() public view returns (FollowUnfollowLogItem[] memory) {
+        // delete _following;
 
-        for (uint256 i = 0; i < followUnfollowLog.length; i++) {
-            FollowUnfollowLogItem storage logItem = followUnfollowLog[i];
+        // for (uint256 i = 0; i < followUnfollowLog.length; i++) {
+        //     FollowUnfollowLogItem storage logItem = followUnfollowLog[i];
 
-            if (logItem.isFollow) {
-                if (Utils.getIndex(_following, logItem.whom) != -1) {
-                    logItem.isValid = false;
-                } else {
-                    _following.push(logItem.whom);
-                }
-            } else {
-                int256 idx = Utils.getIndex(_following, logItem.whom);
-                if (idx != -1) {
-                    _following = Utils.deleteAtIndexUnordered(
-                        _following,
-                        uint256(idx)
-                    );
-                } else {
-                    logItem.isValid = false;
-                }
-            }
-        }
+        //     if (logItem.isFollow) {
+        //         if (Utils.getIndex(_following, logItem.whom) != -1) {
+        //             logItem.isValid = false;
+        //         } else {
+        //             _following.push(logItem.whom);
+        //         }
+        //     } else {
+        //         int256 idx = Utils.getIndex(_following, logItem.whom);
+        //         if (idx != -1) {
+        //             _following = Utils.deleteAtIndexUnordered(
+        //                 _following,
+        //                 uint256(idx)
+        //             );
+        //         } else {
+        //             logItem.isValid = false;
+        //         }
+        //     }
+        // }
 
-        return _following; // maybe have a Util function to convert storage to memory?
+        // return _following; // maybe have a Util function to convert storage to memory?
+
+        return followUnfollowLog;
     }
 }
