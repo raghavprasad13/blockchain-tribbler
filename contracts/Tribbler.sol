@@ -172,7 +172,10 @@ contract Tribbler {
         Tribs.Trib[] memory returnHomeList = new Tribs.Trib[](
             Constants.MAX_TRIB_FETCH
         );
-        for (uint256 i = 0; i < Constants.MAX_TRIB_FETCH; i++) {
+        uint256 numTribs = homeList.length < Constants.MAX_TRIB_FETCH
+            ? homeList.length
+            : Constants.MAX_TRIB_FETCH;
+        for (uint256 i = 0; i < numTribs; i++) {
             returnHomeList[i] = homeList[i];
         }
 
