@@ -136,6 +136,51 @@ contract Tribbler {
         return user.following();
     }
 
+    function home(string memory username)
+        public
+        view
+        returns (Tribs.Trib[] memory)
+    {
+        require(Utils.isValidUsername(username), "Username is invalid");
+        require(usernames[username], "User does not exist");
+
+        User user = usernameUserMapping[username];
+
+        // get own tribs first
+        Tribs.Trib[] memory homeList = user.tribs();
+
+        // TODO?: cleanup logs; maybe in following?
+
+        User.FollowUnfollowLogItem[] memory followList = user.following();
+
+        for (uint256 i = 0; i < followList.length; i++) {
+            User.FollowUnfollowLogItem memory _followedUser = followList[i];
+            string memory followedUsername = _followedUser.whom;
+            if (!usernames[followedUsername]) continue;
+
+            User followedUser = usernameUserMapping[followedUsername];
+            Tribs.Trib[] memory followedUserTribs = followedUser.tribs();
+            homeList = Utils.appendArray(homeList, followedUserTribs);
+        }
+
+        return homeList;
+
+        // homeList = Utils.bubbleSort_memTribs(homeList);
+
+        // return only top MAX_TRIB_FETCH tribs
+        // Tribs.Trib[] memory returnHomeList = new Tribs.Trib[](
+        //     Constants.MAX_TRIB_FETCH
+        // );
+        // uint256 numTribs = homeList.length < Constants.MAX_TRIB_FETCH
+        //     ? homeList.length
+        //     : Constants.MAX_TRIB_FETCH;
+        // for (uint256 i = 0; i < numTribs; i++) {
+        //     returnHomeList[i] = homeList[i];
+        // }
+
+        // return returnHomeList;
+    }
+
     // function home(string memory username) public returns (Tribs.Trib[] memory) {
     //     require(Utils.isValidUsername(username), "Username is invalid");
     //     require(usernames[username], "User does not exist");
