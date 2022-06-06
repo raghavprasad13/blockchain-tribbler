@@ -3,8 +3,6 @@
 pragma solidity ^0.8.0;
 
 import "./User.sol";
-import "./Constants.sol";
-import "./Tribs.sol";
 import "./Utils.sol";
 
 contract Tribbler {
@@ -13,18 +11,18 @@ contract Tribbler {
     string[] usernameArray; // this will be used for listUsers
 
     function signup(string memory username) public returns (bool) {
-        require(Utils.isValidUsername(username), "Username is invalid");
+        // require(Utils.isValidUsername(username), "Username is invalid"); - checked in frontend in python
         require(!usernames[username], "User already exists");
 
         User user = new User(username);
-        if (usernameArray.length < Constants.MIN_LIST_USER)
+        if (usernameArray.length < Utils.MIN_LIST_USER)
             usernameArray.push(username);
         usernameUserMapping[username] = user;
         usernames[username] = true;
         return true;
     }
 
-    // Using below function instead of above one. Sorting in python scripts for now
+    // Sorting in python frontend scripts for now
     function listUsers() public view returns (string[] memory) {
         require(usernameArray.length > 0, "No users exist");
         return usernameArray;
@@ -35,11 +33,6 @@ contract Tribbler {
         returns (bool)
     {
         // this function must remain `non-pure`
-        require(
-            bytes(_post).length < Constants.MAX_TRIB_LEN,
-            "Post is too long"
-        );
-        require(Utils.isValidUsername(username), "Username is invalid");
 
         return true;
     }
@@ -51,7 +44,7 @@ contract Tribbler {
         uint256 blockNum,
         uint256 txIndex
     ) public returns (bool) {
-        Tribs.Trib memory trib = Tribs.Trib(
+        Utils.Trib memory trib = Utils.Trib(
             username,
             message,
             timestamp,
@@ -66,9 +59,8 @@ contract Tribbler {
     function tribs(string memory username)
         public
         view
-        returns (Tribs.Trib[] memory)
+        returns (Utils.Trib[] memory)
     {
-        require(Utils.isValidUsername(username), "Username is invalid");
         require(usernames[username], "User does not exist");
 
         User user = usernameUserMapping[username];
@@ -80,14 +72,14 @@ contract Tribbler {
         returns (bool)
     {
         // this function must remain `non-pure`
-        require(
-            !Utils.whoWhomSame(who, whom),
-            "Both the usernames are the same"
-        );
-        require(
-            Utils.isValidUsername(who) && Utils.isValidUsername(whom),
-            "Username is invalid"
-        );
+        // require(
+        //     !Utils.whoWhomSame(who, whom),
+        //     "Both the usernames are the same"
+        // );
+        // require(
+        //     Utils.isValidUsername(who) && Utils.isValidUsername(whom),
+        //     "Username is invalid"
+        // );
         require(usernames[who] && usernames[whom], "User does not exist");
 
         return true;
@@ -99,36 +91,16 @@ contract Tribbler {
         string memory whom,
         string memory txHash
     ) public returns (bool) {
-        // User user = users[msg.sender];
         User user = usernameUserMapping[who];
         return user.appendToFollowUnfollowLog(isFollow, whom, txHash);
     }
-
-    // function isFollowing(string memory who, string memory whom)
-    //     public
-    //     returns (bool)
-    // {
-    //     require(
-    //         !Utils.whoWhomSame(who, whom),
-    //         "Both the usernames are the same"
-    //     );
-    //     require(
-    //         Utils.isValidUsername(who) && Utils.isValidUsername(whom),
-    //         "Username is invalid"
-    //     );
-    //     require(usernames[who] && usernames[whom], "User does not exist");
-
-    //     // User user = users[msg.sender];
-    //     User user = usernameUserMapping[who];
-    //     return user.isFollowing(whom);
-    // }
 
     function following(string memory username)
         public
         view
         returns (User.FollowUnfollowLogItem[] memory)
     {
-        require(Utils.isValidUsername(username), "Username is invalid");
+        // require(Utils.isValidUsername(username), "Username is invalid");
         require(usernames[username], "User does not exist");
 
         // User user = users[msg.sender];
@@ -136,193 +108,32 @@ contract Tribbler {
         return user.following();
     }
 
-    function home(string memory username)
-        public
-        view
-        returns (Tribs.Trib[] memory)
-    {
-        require(Utils.isValidUsername(username), "Username is invalid");
-        require(usernames[username], "User does not exist");
-
-        User user = usernameUserMapping[username];
-
-        // get own tribs first
-        Tribs.Trib[] memory homeList = user.tribs();
-
-        // TODO?: cleanup logs; maybe in following?
-
-        User.FollowUnfollowLogItem[] memory followList = user.following();
-
-        for (uint256 i = 0; i < followList.length; i++) {
-            User.FollowUnfollowLogItem memory _followedUser = followList[i];
-            string memory followedUsername = _followedUser.whom;
-            if (!usernames[followedUsername]) continue;
-
-            User followedUser = usernameUserMapping[followedUsername];
-            Tribs.Trib[] memory followedUserTribs = followedUser.tribs();
-            homeList = Utils.appendArray(homeList, followedUserTribs);
-        }
-
-        return homeList;
-
-        // homeList = Utils.bubbleSort_memTribs(homeList);
-
-        // return only top MAX_TRIB_FETCH tribs
-        // Tribs.Trib[] memory returnHomeList = new Tribs.Trib[](
-        //     Constants.MAX_TRIB_FETCH
-        // );
-        // uint256 numTribs = homeList.length < Constants.MAX_TRIB_FETCH
-        //     ? homeList.length
-        //     : Constants.MAX_TRIB_FETCH;
-        // for (uint256 i = 0; i < numTribs; i++) {
-        //     returnHomeList[i] = homeList[i];
-        // }
-
-        // return returnHomeList;
-    }
-
-    // function home(string memory username) public returns (Tribs.Trib[] memory) {
-    //     require(Utils.isValidUsername(username), "Username is invalid");
+    // function home(string memory username)
+    //     public
+    //     view
+    //     returns (Utils.Trib[] memory)
+    // {
+    //     // require(Utils.isValidUsername(username), "Username is invalid");
     //     require(usernames[username], "User does not exist");
 
     //     User user = usernameUserMapping[username];
 
     //     // get own tribs first
-    //     Tribs.Trib[] memory homeList = user.tribs();
+    //     Utils.Trib[] memory homeList = user.tribs();
 
-    //     // TODO?: cleanup logs; maybe in following?
-
-    //     string[] memory followList = user.following();
+    //     // get following
+    //     User.FollowUnfollowLogItem[] memory followList = user.following();
 
     //     for (uint256 i = 0; i < followList.length; i++) {
-    //         string memory followedUsername = followList[i];
+    //         User.FollowUnfollowLogItem memory _followedUser = followList[i];
+    //         string memory followedUsername = _followedUser.whom;
     //         if (!usernames[followedUsername]) continue;
 
     //         User followedUser = usernameUserMapping[followedUsername];
-    //         Tribs.Trib[] memory followedUserTribs = followedUser.tribs();
+    //         Utils.Trib[] memory followedUserTribs = followedUser.tribs();
     //         homeList = Utils.appendArray(homeList, followedUserTribs);
     //     }
 
-    //     homeList = Utils.bubbleSort_memTribs(homeList);
-
-    //     // return only top MAX_TRIB_FETCH tribs
-    //     Tribs.Trib[] memory returnHomeList = new Tribs.Trib[](
-    //         Constants.MAX_TRIB_FETCH
-    //     );
-    //     for (uint256 i = 0; i < Constants.MAX_TRIB_FETCH; i++) {
-    //         returnHomeList[i] = homeList[i];
-    //     }
-
-    //     return returnHomeList;
-    // }
-
-    // function sort(
-    //     string[] memory arr,
-    //     uint256 startIndex,
-    //     uint256 endIndex
-    // ) public returns (string[] memory) {
-    //     if (startIndex < endIndex) {
-    //         uint256 mid = (startIndex + (endIndex - 1)) / 2;
-    //         arr = sort(arr, startIndex, mid);
-    //         arr = sort(arr, mid + 1, endIndex);
-    //         arr = merge(arr, startIndex, mid, endIndex);
-    //     }
-
-    //     return arr;
-    // }
-
-    // function merge(
-    //     string[] memory arr,
-    //     uint256 left,
-    //     uint256 mid,
-    //     uint256 right
-    // ) public pure returns (string[] memory) {
-    //     uint256 k;
-    //     uint256 n1 = mid - left + 1;
-    //     uint256 n2 = right - mid;
-
-    //     string[] memory L = new string[](n1);
-    //     string[] memory R = new string[](n2);
-
-    //     for (uint256 i = 0; i < n1; i++) L[i] = arr[left + i];
-    //     for (uint256 i = 0; i < n2; i++) {
-    //         // console.log("i = ", i);
-    //         R[i] = arr[mid + left + i];
-    //     }
-
-    //     uint256 _i = 0;
-    //     uint256 _j = 0;
-    //     k = left;
-
-    //     while (_i < n1 && _j < n2) {
-    //         if (String.compare(L[_i], R[_j]) == 1) {
-    //             arr[k] = L[_i];
-    //             _i++;
-    //         } else {
-    //             arr[k] = R[_j];
-    //             _j++;
-    //         }
-    //         k++;
-    //     }
-
-    //     while (_i < n1) {
-    //         arr[k] = L[_i];
-    //         _i++;
-    //         k++;
-    //     }
-
-    //     while (_j < n2) {
-    //         arr[k] = R[_j];
-    //         _j++;
-    //         k++;
-    //     }
-
-    //     return arr;
-    // }
-
-    function bubbleSort(string[] memory arr)
-        public
-        pure
-        returns (string[] memory)
-    {
-        uint256 i;
-        uint256 j;
-        uint256 n = arr.length;
-        string memory temp;
-        for (i = 0; i < n; i++) {
-            for (j = 0; j < n - i - 1; j++) {
-                if (String.compare(arr[j], arr[j + 1]) == -1) {
-                    // arr[j+1] comes first lexicographically
-                    temp = arr[j];
-                    arr[j] = arr[j + 1];
-                    arr[j + 1] = temp;
-                }
-            }
-        }
-
-        return arr;
-    }
-
-    // function bubbleSort(Tribs.Trib[] memory arr)
-    //     public
-    //     pure
-    //     returns (Tribs.Trib[] memory)
-    // {
-    //     uint256 i;
-    //     uint256 j;
-    //     uint256 n = arr.length;
-    //     Tribs.Trib memory temp;
-    //     for (i = 0; i < n; i++) {
-    //         for (j = 0; j < n - i - 1; j++) {
-    //             if (Tribs.compare(arr[j], arr[j + 1]) == -1) {
-    //                 // arr[j+1] should appear above arr[j]
-    //                 temp = arr[j];
-    //                 arr[j] = arr[j + 1];
-    //                 arr[j + 1] = temp;
-    //             }
-    //         }
-    //     }
-
-    //     return arr;
+    //     return homeList;
     // }
 }
