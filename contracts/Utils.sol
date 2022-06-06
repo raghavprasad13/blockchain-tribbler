@@ -2,59 +2,141 @@
 
 pragma solidity ^0.8.0;
 
-import "./Constants.sol";
-import "./String.sol";
-import "./Tribs.sol";
-
 library Utils {
-    /* Function to check if username parameters who and whom are same
+    uint16 public constant MAX_USERNAME_LEN = 15;
+    uint16 public constant MAX_FOLLOWING = 2000;
+    uint16 public constant MAX_TRIB_FETCH = 100;
+    uint16 public constant MIN_LIST_USER = 20;
+    uint16 public constant MAX_TRIB_LEN = 140;
+
+    /* Function to compare two strings
+     * this returns:
+     * 1 if s1 < s2 i.e. s1 comes first lexicographically
+     * -1 if s1 > s2 i.e. s2 comes first lexicographically
+     * 0 if equal
+
+     * keywords 
+     * public: visible externally and internally (creates a getter function for storage/state variables)
+     * pure: Disallows modification or access of state.
      */
-    function whoWhomSame(string memory who, string memory whom)
+    function string_compare(string memory s1, string memory s2)
         public
         pure
-        returns (bool)
+        returns (int256)
     {
-        return
-            keccak256(abi.encodePacked(who)) ==
-            keccak256(abi.encodePacked(whom));
-    }
+        if (keccak256(abi.encodePacked(s1)) == keccak256(abi.encodePacked(s2)))
+            return 0;
 
-    function isValidUsername(string memory username)
-        public
-        pure
-        returns (bool)
-    {
-        if (
-            bytes(username).length == 0 ||
-            bytes(username).length > Constants.MAX_USERNAME_LEN
-        ) return false;
+        // convert strings to bytes
+        bytes memory b1 = bytes(s1);
+        bytes memory b2 = bytes(s2);
 
-        bytes memory chars = bytes(username);
+        uint256 l1 = b1.length;
+        uint256 l2 = b2.length;
 
-        // check if the first character is a lowercase alphabet
-        if (
-            !(chars[0] >= 0x61 && chars[0] <= 0x7A) //a-z
-        ) return false;
+        uint256 traversalLength = l1 < l2 ? l1 : l2; // take minimum of two lengths to iterate on
 
-        // check the rest of the characters
-        for (uint256 i = 0; i < chars.length; i++) {
-            bytes1 char = chars[i];
-            if (
-                !(char >= 0x30 && char <= 0x39) && //9-0
-                !(char >= 0x61 && char <= 0x7A) //a-z
-            ) return false;
+        for (uint256 i = 0; i < traversalLength; i++) {
+            if (b1[i] < b2[i]) return 1;
+            else if (b1[i] > b2[i]) return -1;
         }
 
-        return true;
+        if (traversalLength == l1) return 1;
+        return -1;
     }
 
-    function exists(string[] memory arr, string memory elem)
+    struct Trib {
+        string who;
+        string message;
+        uint256 timestamp;
+        uint256 blockNum;
+        uint256 txIndex; // because we cannot get txIndex. Update: we can get txIndex, but then the operation will have to be broken up into 2 transactions
+    }
+
+    function trib_compare(Trib memory t1, Trib memory t2)
         public
         pure
-        returns (bool)
+        returns (int256)
     {
-        return getIndex(arr, elem) != -1;
+        // this returns:
+        // 1 if t1 > t2; i.e. t1 appears above t2
+        // -1 if t1 < t2; i.e. t2 appears above t1
+        // 0 if t1 == t2
+
+        // Tribble order is:
+        // Trib with higher block number appears on top; if equal
+        // Trib with higher tx index number appears on top; if equal
+        // Trib with higher timestamp appears on top; if equal
+        // Trib with lexicographically first username appears on top; if equal
+        // Trib with lexicographically first message appears on top; if equal
+        // order it any way
+
+        // In our implementation, we have chosen to stop at the comparison of timestamps because
+        // comparing strings lexicographically is unnecessarily expensive and will consume gas
+
+        // compare blockNum
+        if (t1.blockNum > t2.blockNum) return 1;
+        else if (t1.blockNum < t2.blockNum) return -1;
+        else {
+            // compare txIndex
+            if (t1.txIndex > t2.txIndex) return 1;
+            else if (t1.txIndex < t2.txIndex) return -1;
+            else {
+                // compare timestamp
+                if (t1.timestamp > t2.timestamp) return 1;
+                else if (t1.timestamp < t2.timestamp) return -1;
+                else {
+                    // compare usernames
+                    if (string_compare(t1.who, t2.who) == 1) return 1;
+                    else if (string_compare(t1.who, t2.who) == -1) return -1;
+
+                    // compare messages
+                    return string_compare(t1.message, t2.message);
+                }
+            }
+        }
     }
+
+    /* Function to check if username parameters who and whom are same
+     */
+    // function whoWhomSame(string memory who, string memory whom)
+    //     public
+    //     pure
+    //     returns (bool)
+    // {
+    //     return
+    //         keccak256(abi.encodePacked(who)) ==
+    //         keccak256(abi.encodePacked(whom));
+    // }
+
+    // function isValidUsername(string memory username)
+    //     public
+    //     pure
+    //     returns (bool)
+    // {
+    //     if (
+    //         bytes(username).length == 0 ||
+    //         bytes(username).length > MAX_USERNAME_LEN
+    //     ) return false;
+
+    //     bytes memory chars = bytes(username);
+
+    //     // check if the first character is a lowercase alphabet
+    //     if (
+    //         !(chars[0] >= 0x61 && chars[0] <= 0x7A) //a-z
+    //     ) return false;
+
+    //     // check the rest of the characters
+    //     for (uint256 i = 0; i < chars.length; i++) {
+    //         bytes1 char = chars[i];
+    //         if (
+    //             !(char >= 0x30 && char <= 0x39) && //9-0
+    //             !(char >= 0x61 && char <= 0x7A) //a-z
+    //         ) return false;
+    //     }
+
+    //     return true;
+    // }
 
     function getIndex(string[] memory arr, string memory elem)
         public
@@ -89,9 +171,9 @@ library Utils {
         return arr;
     }
 
-    function deleteAtIndexUnordered(Tribs.Trib[] storage arr, uint256 index)
+    function deleteAtIndexUnordered(Trib[] storage arr, uint256 index)
         public
-        returns (Tribs.Trib[] memory)
+        returns (Trib[] memory)
     {
         uint256 size = arr.length;
         require(size > 0, "EmptyArray");
@@ -121,9 +203,9 @@ library Utils {
         return arr;
     }
 
-    function deleteAtIndex(Tribs.Trib[] storage arr, uint256 index)
+    function deleteAtIndex(Trib[] storage arr, uint256 index)
         public
-        returns (Tribs.Trib[] memory)
+        returns (Trib[] memory)
     {
         uint256 size = arr.length;
         require(size > 0, "EmptyArray");
@@ -138,232 +220,13 @@ library Utils {
         return arr;
     }
 
-    function deepCopy(string[] memory arr)
-        public
-        pure
-        returns (string[] memory)
-    {
-        // This returns a "memory" copy of a string[] variable
-
-        string[] memory res = new string[](arr.length);
-        for (uint256 i = 0; i < arr.length; i++) res[i] = arr[i];
-
-        return res;
-    }
-
-    function deepCopy(string[] memory arr, string[] storage copy) public {
-        // This copies from "memory" string[] variable to "storage" string[] variable
-        // Take care that copy is empty before passing it in here
-
-        // do we need a require here?
-        // require(copy.length == 0, "CopyArrayNotEmpty")
-
-        for (uint256 i = 0; i < arr.length; i++) copy.push(arr[i]);
-    }
-
-    function deepCopy(Tribs.Trib[] memory arr)
-        public
-        pure
-        returns (Tribs.Trib[] memory)
-    {
-        // This returns a "memory" copy of a Tribs.Trib[] variable
-
-        Tribs.Trib[] memory res = new Tribs.Trib[](arr.length);
-        for (uint256 i = 0; i < arr.length; i++) res[i] = arr[i];
-
-        return res;
-    }
-
-    function deepCopy(Tribs.Trib[] memory arr, Tribs.Trib[] storage copy)
-        public
-    {
-        // This copies from "memory" Tribs.Trib[] variable to "storage" Tribs.Trib[] variable
-        // Take care that copy is empty before passing it in here
-
-        // do we need a require here?
-        // require(copy.length == 0, "CopyArrayNotEmpty")
-
-        for (uint256 i = 0; i < arr.length; i++) copy.push(arr[i]);
-    }
-
-    function sort(
-        string[] storage arr,
-        uint256 startIndex,
-        uint256 endIndex
-    ) public {
-        if (startIndex < endIndex) {
-            uint256 mid = (startIndex + (endIndex - 1)) / 2;
-            sort(arr, startIndex, mid);
-            sort(arr, mid + 1, endIndex);
-            merge(arr, startIndex, mid, endIndex);
-        }
-    }
-
-    function merge(
-        string[] storage arr,
-        uint256 left,
-        uint256 mid,
-        uint256 right
-    ) public {
-        uint256 k;
-        uint256 n1 = mid - left + 1;
-        uint256 n2 = right - mid;
-
-        string[] memory L = new string[](n1);
-        string[] memory R = new string[](n2);
-
-        for (uint256 i = 0; i < n1; i++) L[i] = arr[left + i];
-        for (uint256 i = 0; i < n2; i++) R[i] = arr[mid + left + i];
-
-        uint256 _i = 0;
-        uint256 _j = 0;
-        k = left;
-
-        while (_i < n1 && _j < n2) {
-            if (String.compare(L[_i], R[_j]) == 1) {
-                arr[k] = L[_i];
-                _i++;
-            } else {
-                arr[k] = R[_j];
-                _j++;
-            }
-            k++;
-        }
-
-        while (_i < n1) {
-            arr[k] = L[_i];
-            _i++;
-            k++;
-        }
-
-        while (_j < n2) {
-            arr[k] = R[_j];
-            _j++;
-            k++;
-        }
-    }
-
-    // function sort(
-    //     string[] memory arr,
-    //     uint256 startIndex,
-    //     uint256 endIndex
-    // ) public {
-    //     if (startIndex < endIndex) {
-    //         uint256 mid = (startIndex + (endIndex - 1)) / 2;
-    //         sort(arr, startIndex, mid);
-    //         sort(arr, mid, endIndex);
-    //         merge(arr, startIndex, mid, endIndex);
-    //     }
-    // }
-
-    // function merge(
-    //     string[] memory arr,
-    //     uint256 left,
-    //     uint256 mid,
-    //     uint256 right
-    // ) public {
-    //     uint256 k;
-    //     uint256 n1 = mid - left + 1;
-    //     uint256 n2 = right - mid;
-
-    //     string[] memory L = new string[](n1);
-    //     string[] memory R = new string[](n2);
-
-    //     for (uint256 i = 0; i < n1; i++) L[i] = arr[left + i];
-    //     for (uint256 i = 0; i < n2; i++) R[i] = arr[mid + left + i];
-
-    //     uint256 _i = 0;
-    //     uint256 _j = 0;
-    //     k = left;
-
-    //     while (_i < n1 && _j < n2) {
-    //         if (String.compare(L[_i], R[_j]) == 1) {
-    //             arr[k] = L[_i];
-    //             _i++;
-    //         } else {
-    //             arr[k] = R[_j];
-    //             _j++;
-    //         }
-    //         k++;
-    //     }
-
-    //     while (_i < n1) {
-    //         arr[k] = L[_i];
-    //         _i++;
-    //         k++;
-    //     }
-
-    //     while (_j < n2) {
-    //         arr[k] = R[_j];
-    //         _j++;
-    //         k++;
-    //     }
-    // }
-
-    function sort(
-        Tribs.Trib[] memory arr,
-        uint256 startIndex,
-        uint256 endIndex
-    ) public {
-        if (startIndex < endIndex) {
-            uint256 mid = (startIndex + (endIndex - 1)) / 2;
-            sort(arr, startIndex, mid);
-            sort(arr, mid + 1, endIndex);
-            merge(arr, startIndex, mid, endIndex);
-        }
-    }
-
-    function merge(
-        Tribs.Trib[] memory arr,
-        uint256 left,
-        uint256 mid,
-        uint256 right
-    ) public pure {
-        uint256 k;
-        uint256 n1 = mid - left + 1;
-        uint256 n2 = right - mid;
-
-        Tribs.Trib[] memory L = new Tribs.Trib[](n1);
-        Tribs.Trib[] memory R = new Tribs.Trib[](n2);
-
-        for (uint256 i = 0; i < n1; i++) L[i] = arr[left + i];
-        for (uint256 i = 0; i < n2; i++) R[i] = arr[mid + left + i];
-
-        uint256 _i = 0;
-        uint256 _j = 0;
-        k = left;
-
-        while (_i < n1 && _j < n2) {
-            if (Tribs.compare(L[_i], R[_j]) == 1) {
-                arr[k] = L[_i];
-                _i++;
-            } else {
-                arr[k] = R[_j];
-                _j++;
-            }
-            k++;
-        }
-
-        while (_i < n1) {
-            arr[k] = L[_i];
-            _i++;
-            k++;
-        }
-
-        while (_j < n2) {
-            arr[k] = R[_j];
-            _j++;
-            k++;
-        }
-    }
-
     // Append one in-memory array to another
-    function appendArray(Tribs.Trib[] memory arr1, Tribs.Trib[] memory arr2)
+    function appendArray(Trib[] memory arr1, Trib[] memory arr2)
         public
         pure
-        returns (Tribs.Trib[] memory)
+        returns (Trib[] memory)
     {
-        Tribs.Trib[] memory res = new Tribs.Trib[](arr1.length + arr2.length);
+        Trib[] memory res = new Trib[](arr1.length + arr2.length);
 
         uint256 i;
         for (i = 0; i < arr1.length; i++) {
@@ -377,47 +240,5 @@ library Utils {
         }
 
         return res;
-    }
-
-    function bubbleSort(Tribs.Trib[] storage arr) public {
-        uint256 i;
-        uint256 j;
-        uint256 n = arr.length;
-        Tribs.Trib memory temp;
-        for (i = 0; i < n; i++) {
-            for (j = 0; j < n - i - 1; j++) {
-                if (Tribs.compare(arr[j], arr[j + 1]) == -1) {
-                    // arr[j+1] should appear above arr[j]
-                    temp = arr[j];
-                    arr[j] = arr[j + 1];
-                    arr[j + 1] = temp;
-                }
-            }
-        }
-
-        // return arr;
-    }
-
-    function bubbleSort_memTribs(Tribs.Trib[] memory arr)
-        public
-        pure
-        returns (Tribs.Trib[] memory)
-    {
-        uint256 i;
-        uint256 j;
-        uint256 n = arr.length;
-        Tribs.Trib memory temp;
-        for (i = 0; i < n; i++) {
-            for (j = 0; j < n - i - 1; j++) {
-                if (Tribs.compare(arr[j], arr[j + 1]) == -1) {
-                    // arr[j+1] should appear above arr[j]
-                    temp = arr[j];
-                    arr[j] = arr[j + 1];
-                    arr[j + 1] = temp;
-                }
-            }
-        }
-
-        return arr;
     }
 }

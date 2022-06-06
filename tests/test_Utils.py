@@ -1,12 +1,10 @@
-from brownie import Utils, String, Tribs, accounts
+from brownie import Utils, accounts
 
 
 # def test_whoWhomSame1():
 #     account = accounts[0]
 
 #     # arrange
-#     String.deploy({"from": account})
-#     Tribs.deploy({"from": account})
 #     utils_obj = Utils.deploy({"from": account})
 
 #     # act
@@ -23,8 +21,6 @@ from brownie import Utils, String, Tribs, accounts
 #     account = accounts[0]
 
 #     # arrange
-#     String.deploy({"from": account})
-#     Tribs.deploy({"from": account})
 #     utils_obj = Utils.deploy({"from": account})
 
 #     # act
@@ -41,8 +37,6 @@ from brownie import Utils, String, Tribs, accounts
 #     account = accounts[0]
 
 #     # arrange
-#     String.deploy({"from": account})
-#     Tribs.deploy({"from": account})
 #     utils_obj = Utils.deploy({"from": account})
 
 #     # act
@@ -58,8 +52,6 @@ from brownie import Utils, String, Tribs, accounts
 #     account = accounts[0]
 
 #     # arrange
-#     String.deploy({"from": account})
-#     Tribs.deploy({"from": account})
 #     utils_obj = Utils.deploy({"from": account})
 
 #     # act
@@ -75,8 +67,6 @@ from brownie import Utils, String, Tribs, accounts
 #     account = accounts[0]
 
 #     # arrange
-#     String.deploy({"from": account})
-#     Tribs.deploy({"from": account})
 #     utils_obj = Utils.deploy({"from": account})
 
 #     # act
@@ -126,8 +116,6 @@ from brownie import Utils, String, Tribs, accounts
 #     account = accounts[0]
 
 #     # arrange
-#     String.deploy({"from": account})
-#     Tribs.deploy({"from": account})
 #     utils_obj = Utils.deploy({"from": account})
 
 #     # act
@@ -143,8 +131,6 @@ from brownie import Utils, String, Tribs, accounts
 #     account = accounts[0]
 
 #     # arrange
-#     String.deploy({"from": account})
-#     Tribs.deploy({"from": account})
 #     utils_obj = Utils.deploy({"from": account})
 
 #     # act
@@ -161,8 +147,6 @@ from brownie import Utils, String, Tribs, accounts
 #     account = accounts[0]
 
 #     # arrange
-#     String.deploy({"from": account})
-#     Tribs.deploy({"from": account})
 #     utils_obj = Utils.deploy({"from": account})
 
 #     print(utils_obj)
@@ -170,12 +154,15 @@ from brownie import Utils, String, Tribs, accounts
 
 #     # act
 #     test_arr = ["a", "p", "b", "q", "c", "r"]
-#     output = utils_obj.deleteAtIndexUnordered(test_arr, 2)
+#     tx = utils_obj.deleteAtIndexUnordered(test_arr, 2)
+#     tx.wait(1)
+
+#     output = tx.return_value
 
 #     expected_output = ["a", "p", "r", "q", "c"]
 
 #     # assert
-#     assert output.return_value == expected_output
+#     assert output == expected_output
 
 
 # def test_deleteAtIndexUnordered2():
@@ -242,24 +229,4 @@ from brownie import Utils, String, Tribs, accounts
 #     assert output.return_value == expected_output
 
 
-##### merge
-
-
 ##### appendArray
-
-
-### test
-# def test_test():
-#     account = accounts[0]
-
-#     # arrange
-#     String.deploy({"from": account})
-#     Tribs.deploy({"from": account})
-#     utils_obj = Utils.deploy({"from": account})
-
-#     # print(type(utils_obj), Utils, Utils[0].info())
-
-#     test_bool = utils_obj.test()
-#     print(test_bool)
-
-#     assert test_bool == True

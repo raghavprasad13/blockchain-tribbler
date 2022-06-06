@@ -1,4 +1,4 @@
-from brownie import String, accounts
+from brownie import Utils, accounts
 
 
 def test_lexicographicOrder1():
@@ -6,12 +6,12 @@ def test_lexicographicOrder1():
     account = accounts[0]
 
     # arrange
-    string_obj = String.deploy({"from": account})
+    utils_obj = Utils.deploy({"from": account})
 
     # act
     s1 = "hello"
     s2 = "world"
-    cmp_output = string_obj.compare(s1, s2)
+    cmp_output = utils_obj.string_compare(s1, s2)
     expected_cmp_output = 1  # s1 comes first lexicographically
 
     # assert
@@ -23,12 +23,12 @@ def test_lexicographicOrder2():
     account = accounts[0]
 
     # arrange
-    string_obj = String.deploy({"from": account})
+    utils_obj = Utils.deploy({"from": account})
 
     # act
     s1 = "world"
     s2 = "hello"
-    cmp_output = string_obj.compare(s1, s2)
+    cmp_output = utils_obj.string_compare(s1, s2)
     expected_cmp_output = -1  # s2 comes first lexicographically
 
     # assert
@@ -40,12 +40,12 @@ def test_lexicographicOrder3():
     account = accounts[0]
 
     # arrange
-    string_obj = String.deploy({"from": account})
+    utils_obj = Utils.deploy({"from": account})
 
     # act
     s1 = "hello world!"
     s2 = "hello world!"
-    cmp_output = string_obj.compare(s1, s2)
+    cmp_output = utils_obj.string_compare(s1, s2)
     expected_cmp_output = 0  # equal strings
 
     # assert
@@ -57,12 +57,12 @@ def test_lexicographicOrder4():
     account = accounts[0]
 
     # arrange
-    string_obj = String.deploy({"from": account})
+    utils_obj = Utils.deploy({"from": account})
 
     # act
     s1 = "hello world"
     s2 = "world"
-    cmp_output = string_obj.compare(s1, s2)
+    cmp_output = utils_obj.string_compare(s1, s2)
     expected_cmp_output = 1  # s1 comes first lexicographically
 
     # assert
@@ -74,12 +74,12 @@ def test_lexicographicOrder5():
     account = accounts[0]
 
     # arrange
-    string_obj = String.deploy({"from": account})
+    utils_obj = Utils.deploy({"from": account})
 
     # act
     s1 = "abc"
     s2 = "world"
-    cmp_output = string_obj.compare(s1, s2)
+    cmp_output = utils_obj.string_compare(s1, s2)
     expected_cmp_output = 1  # s1 comes first lexicographically
 
     # assert
@@ -91,12 +91,12 @@ def test_lexicographicOrder6():
     account = accounts[0]
 
     # arrange
-    string_obj = String.deploy({"from": account})
+    utils_obj = Utils.deploy({"from": account})
 
     # act
     s1 = "world"
     s2 = "hello world"
-    cmp_output = string_obj.compare(s1, s2)
+    cmp_output = utils_obj.string_compare(s1, s2)
     expected_cmp_output = -1  # s2 comes first lexicographically
 
     # assert
@@ -108,12 +108,12 @@ def test_lexicographicOrder7():
     account = accounts[0]
 
     # arrange
-    string_obj = String.deploy({"from": account})
+    utils_obj = Utils.deploy({"from": account})
 
     # act
     s1 = "world"
     s2 = "abc"
-    cmp_output = string_obj.compare(s1, s2)
+    cmp_output = utils_obj.string_compare(s1, s2)
     expected_cmp_output = -1  # s2 comes first lexicographically
 
     # assert
@@ -125,12 +125,12 @@ def test_lexicographicOrder_special1():
     account = accounts[0]
 
     # arrange
-    string_obj = String.deploy({"from": account})
+    utils_obj = Utils.deploy({"from": account})
 
     # act
     s1 = "hello"
     s2 = " world"
-    cmp_output = string_obj.compare(s1, s2)
+    cmp_output = utils_obj.string_compare(s1, s2)
     expected_cmp_output = -1  # s2 comes first lexicographically
 
     # assert
@@ -142,12 +142,12 @@ def test_lexicographicOrder_special2():
     account = accounts[0]
 
     # arrange
-    string_obj = String.deploy({"from": account})
+    utils_obj = Utils.deploy({"from": account})
 
     # act
     s1 = ""
     s2 = ""
-    cmp_output = string_obj.compare(s1, s2)
+    cmp_output = utils_obj.string_compare(s1, s2)
     expected_cmp_output = 0  # equal
 
     # assert
@@ -159,12 +159,12 @@ def test_lexicographicOrder_special3():
     account = accounts[0]
 
     # arrange
-    string_obj = String.deploy({"from": account})
+    utils_obj = Utils.deploy({"from": account})
 
     # act
     s1 = ""
     s2 = "   "
-    cmp_output = string_obj.compare(s1, s2)
+    cmp_output = utils_obj.string_compare(s1, s2)
     expected_cmp_output = 1  # s1 comes first lexicographically
 
     # assert
@@ -176,12 +176,12 @@ def test_lexicographicOrder_special4():
     account = accounts[0]
 
     # arrange
-    string_obj = String.deploy({"from": account})
+    utils_obj = Utils.deploy({"from": account})
 
     # act
     s1 = "abcde"
     s2 = ""
-    cmp_output = string_obj.compare(s1, s2)
+    cmp_output = utils_obj.string_compare(s1, s2)
     expected_cmp_output = -1  # s2 comes first lexicographically
 
     # assert

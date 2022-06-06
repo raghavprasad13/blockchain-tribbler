@@ -1,46 +1,39 @@
 from brownie import (
     Tribbler,
     Utils,
-    Tribs,
-    String,
     accounts,
     reverts,
-    Constants,
     network,
     web3,
 )
 import time
 
 
-# # def test_signup1():
-# #     account = accounts[0]
+# def test_signup1():
+#     account = accounts[0]
 
-# #     # arrange
-# #     String.deploy({"from": account})
-# #     Tribs.deploy({"from": account})
-# #     Utils.deploy({"from": account})
-# #     tribbler = Tribbler.deploy({"from": account})
+#     # arrange
+#     Utils.deploy({"from": account})
+#     tribbler = Tribbler.deploy({"from": account})
 
-# #     # act
-# #     test_username = "u1"
-# #     output = tribbler.signup(test_username)
-# #     output.wait(1)
-# #     # print(type(output))
-# #     # expected_output = True
+#     # act
+#     test_username = "u1"
+#     tx = tribbler.signup(test_username)
+#     tx.wait(1)
 
-# #     # list_usernames = tribbler.usernames
-# #     # print(list_usernames[0])
+#     expected_output = True
 
-# #     # assert
-# #     # assert type(output) == expected_output
+#     # list_usernames = tribbler.usernames
+#     # print(list_usernames[0])
+
+#     # assert
+#     assert tx.return_value == expected_output
 
 
 # def test_signup2():
 #     account = accounts[0]
 
 #     # arrange
-#     String.deploy({"from": account})
-#     Tribs.deploy({"from": account})
 #     Utils.deploy({"from": account})
 #     tribbler = Tribbler.deploy({"from": account})
 
@@ -55,8 +48,6 @@ import time
 #     account = accounts[0]
 
 #     # arrange
-#     String.deploy({"from": account})
-#     Tribs.deploy({"from": account})
 #     Utils.deploy({"from": account})
 #     tribbler = Tribbler.deploy({"from": account})
 
@@ -70,8 +61,6 @@ import time
 #     account = accounts[0]
 
 #     # arrange
-#     String.deploy({"from": account})
-#     Tribs.deploy({"from": account})
 #     Utils.deploy({"from": account})
 #     tribbler = Tribbler.deploy({"from": account})
 
@@ -89,8 +78,6 @@ import time
 #     # network.gas_price("50 gwei")
 
 #     # arrange
-#     String.deploy({"from": account})
-#     Tribs.deploy({"from": account})
 #     Utils.deploy({"from": account})
 #     tribbler = Tribbler.deploy({"from": account})
 
@@ -107,10 +94,50 @@ import time
 #     # tx.wait(1)
 #     # print(tx.return_value)
 
-#     list_users = tribbler.listUsers()
-#     # print(list_users.info())
+#     list_users = list(tribbler.listUsers())
+#     list_users.sort()
+#     print(list_users)
 
-#     assert sorted(list_users) == ["u1", "u2", "u3"]
+#     assert list_users == ["u1", "u2", "u3"]
+
+
+# def test_noUsers():
+#     account = accounts[0]
+
+#     # arrange
+#     Utils.deploy({"from": account})
+#     tribbler = Tribbler.deploy({"from": account})
+
+#     # act
+
+#     # assert
+#     with reverts("No users exist"):
+#         tribbler.listUsers()
+
+
+# def test_minListUser():
+#     account = accounts[0]
+
+#     # arrange
+#     Utils.deploy({"from": account})
+#     tribbler = Tribbler.deploy({"from": account})
+
+#     # act
+#     for i in range(25, -1, -1):
+#         username = "u" + str(i)
+#         # print(username)
+#         tribbler.signup(username)
+
+#     listUsers = list(tribbler.listUsers())
+#     listUsers.sort()
+#     print(listUsers)
+
+#     listOfUsers = ["u" + str(i) for i in range(6, 26)]
+#     listOfUsers = sorted(listOfUsers)
+
+#     assert len(listUsers) == 20
+
+#     assert listUsers == listOfUsers
 
 
 ##### sort
@@ -139,34 +166,6 @@ import time
 #     assert output == expected_output
 
 
-# def test_minListUser():
-#     account = accounts[0]
-
-#     # arrange
-#     String.deploy({"from": account})
-#     Tribs.deploy({"from": account})
-#     Utils.deploy({"from": account})
-#     tribbler = Tribbler.deploy({"from": account})
-
-#     # act
-#     for i in range(25, -1, -1):
-#         username = "u" + str(i)
-#         print(username)
-#         tribbler.signup(username)
-
-#     tx = tribbler.listUsers()
-#     # tx.wait(1)
-#     tx = sorted(tx)
-#     print(tx)
-
-#     listOfUsers = ["u" + str(i) for i in range(6, 26)]
-#     listOfUsers = sorted(listOfUsers)
-
-#     assert len(tx) == 20
-
-#     assert tx == listOfUsers
-
-
 # def test_maxTribLen():
 #     account = accounts[0]
 
@@ -184,71 +183,71 @@ import time
 #         tribbler.post("testusername", longTrib)
 
 
-def test_maxFollowing():
-    account = accounts[0]
+# def test_maxFollowing():
+#     account = accounts[0]
 
-    web3.connect("https://127.0.0.1:8545", timeout=300)
+#     web3.connect("https://127.0.0.1:8545", timeout=300)
 
-    # arrange
-    String.deploy({"from": account})
-    Tribs.deploy({"from": account})
-    Utils.deploy({"from": account})
-    tribbler = Tribbler.deploy({"from": account})
+#     # arrange
+#     String.deploy({"from": account})
+#     Tribs.deploy({"from": account})
+#     Utils.deploy({"from": account})
+#     tribbler = Tribbler.deploy({"from": account})
 
-    # act
-    for i in range(25, -1, -1):
-        username = "u" + str(i)
-        # print(username)
-        tribbler.signup(username)
+#     # act
+#     for i in range(25, -1, -1):
+#         username = "u" + str(i)
+#         # print(username)
+#         tribbler.signup(username)
 
-    for j in range(1, 21):
-        who = "u0"
-        whom = "u" + str(j)
+#     for j in range(1, 21):
+#         who = "u0"
+#         whom = "u" + str(j)
 
-        tx = tribbler.followOrUnfollow(who, whom)
-        tx_hash = tx.txid
-        tx_hash = tx_hash[2:]
-        # print(type(tx_hash), tx_hash)
+#         tx = tribbler.followOrUnfollow(who, whom)
+#         tx_hash = tx.txid
+#         tx_hash = tx_hash[2:]
+#         # print(type(tx_hash), tx_hash)
 
-        tx = tribbler.appendToFollowUnfollowLog(True, who, whom, tx_hash)
+#         tx = tribbler.appendToFollowUnfollowLog(True, who, whom, tx_hash)
 
-    # who = "u0"
-    # whom = "u6"
+#     # who = "u0"
+#     # whom = "u6"
 
-    # tx = tribbler.followOrUnfollow(who, whom)
-    # tx_hash = tx.txid
-    # tx_hash = tx_hash[2:]
-    # # print(type(tx_hash), tx_hash)
+#     # tx = tribbler.followOrUnfollow(who, whom)
+#     # tx_hash = tx.txid
+#     # tx_hash = tx_hash[2:]
+#     # # print(type(tx_hash), tx_hash)
 
-    # with reverts("Following too many people"):
-    #     tx = tribbler.appendToFollowUnfollowLog(True, who, whom, tx_hash)
+#     # with reverts("Following too many people"):
+#     #     tx = tribbler.appendToFollowUnfollowLog(True, who, whom, tx_hash)
 
-    username = "u0"
-    tx = tribbler.following(username)
+#     username = "u0"
+#     tx = tribbler.following(username)
 
-    followingList = tx.return_value
-    print(followingList)
+#     followingList = tx.return_value
+#     print(followingList)
 
-    assert len(followingList) == 20
+#     assert len(followingList) == 20
 
-    # who = "u0"
-    # whom = "u7"
+#     # who = "u0"
+#     # whom = "u7"
 
-    # tx = tribbler.followOrUnfollow(who, whom)
-    # tx_hash = tx.txid
-    # tx_hash = tx_hash[2:]
-    # # print(type(tx_hash), tx_hash)
+#     # tx = tribbler.followOrUnfollow(who, whom)
+#     # tx_hash = tx.txid
+#     # tx_hash = tx_hash[2:]
+#     # # print(type(tx_hash), tx_hash)
 
-    # with reverts("Following too many people"):
-    #     tx = tribbler.appendToFollowUnfollowLog(True, who, whom, tx_hash)
+#     # with reverts("Following too many people"):
+#     #     tx = tribbler.appendToFollowUnfollowLog(True, who, whom, tx_hash)
 
-    # username = "u0"
-    # tx = tribbler.following(username)
+#     # username = "u0"
+#     # tx = tribbler.following(username)
 
-    # followingList = tx.return_value
-    # print(followingList)
+#     # followingList = tx.return_value
+#     # print(followingList)
 
-    # assert len(followingList) == 5
+#     # assert len(followingList) == 5
 
 
 # def test_post():
