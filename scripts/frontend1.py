@@ -1,5 +1,5 @@
-from collections import UserList
 from . import deploy
+from .constants import *
 
 from brownie import accounts
 
@@ -7,8 +7,8 @@ from brownie import accounts
 def main():
 
     contractAddresses = {
-        "utils_contract": "0xF94f44597ABebc72CDB0980079fc483fCD49745A",
-        "tribbler_contract": "0x25836965Fb1f7993de6F19929666B2e257492fe3",
+        "utils_contract": UTILS_CONTRACT_HASH,
+        "tribbler_contract": TRIBBLER_CONTRACT_HASH,
     }
 
     account = accounts[6]

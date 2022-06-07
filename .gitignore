@@ -1,4 +1,5 @@
 __pycache__
+.pytest_cache
 .env
 .history
 .hypothesis/
@@ -9,3 +10,4 @@ reports/
 blockchain-tribbler-venv/
 node_modules
 Limitations.txt
+data
