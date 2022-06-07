@@ -16,12 +16,13 @@ from .constants import (
     UTILS_CONTRACT_HASH,
 )
 from os.path import join
+import os
 import argparse
 
 
-def run(gas_price: int, num_tribs: int):
+def run(gas_price: int, num_tribs: int, account, timestamp):
     network.gas_price(str(gas_price) + " gwei")
-    account = accounts[6]
+    # account = accounts[6]
 
     tribbler = TribblerMain(
         account=account,
@@ -31,28 +32,47 @@ def run(gas_price: int, num_tribs: int):
 
     users = ["raghav", "rajdeep", "harsh"]
 
-    user = users[0]
+    # user = users[0]
+    if gas_price == GAS_PRICE_STANDARD:
+        user = "raghav"
+    elif gas_price == GAS_PRICE_SAFE_LOW:
+        user = "rajdeep"
+    else:
+        user = "harsh"
 
-    tribbler.signupTx(user)
+    # tribbler.signupTx(user)
 
     file_name = "serial_post"
-    now = int(time.time())
 
-    final_file_name = "_".join([file_name, str(gas_price), str(now), ".csv"])
+    final_file_name = "_".join([file_name, str(gas_price), str(timestamp), ".csv"])
+    # print(final_file_name)
 
-    f = open(join("..", "data", final_file_name), "w")
+    pwd = os.getcwd()
+
+    f = open(join(pwd, "data", final_file_name), "a")
     for trib_num in range(1, num_tribs + 1):
         start = time.time()
         tribbler.postTx(user, "trib" + str(trib_num))
         end = time.time()
 
-        time_taken = round(end - start, 2)
-        f.write(str(trib_num) + "," + str(time_taken))
+        time_taken = round(end - start, 3)
+        f.write(str(trib_num) + "," + str(time_taken) + "\n")
 
     f.close()
 
 
-gas_prices = [GAS_PRICE_SAFE_LOW, GAS_PRICE_STANDARD, GAS_PRICE_FAST]
-num_tribs = 500
-for gas_price in gas_prices:
-    run(gas_price=gas_price, num_tribs=num_tribs)
+def main():
+    account = accounts.load("test-account1")
+
+    timestamp_now = int(time.time())
+
+    # gas_prices = [GAS_PRICE_SAFE_LOW, GAS_PRICE_STANDARD, GAS_PRICE_FAST]
+    gas_prices = [GAS_PRICE_FAST, GAS_PRICE_STANDARD, GAS_PRICE_SAFE_LOW]
+    num_tribs = 105
+    for gas_price in gas_prices:
+        run(
+            gas_price=gas_price,
+            num_tribs=num_tribs,
+            account=account,
+            timestamp=timestamp_now,
+        )

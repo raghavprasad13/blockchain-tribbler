@@ -17,27 +17,32 @@ from .constants import (
 )
 from os.path import join
 from os import system, cpu_count
+import os
 from multiprocessing import Process
 
 
-def run(gas_price: int, num_tribs: int, user: str):
+def run(gas_price: int, num_tribs: int, user: str, account, timestamp):
     network.gas_price(str(gas_price) + " gwei")
-    account = accounts[6]
+    # account = accounts[6]
 
     tribbler = TribblerMain(
         account=account,
-        utilsAddr=UTILS_CONTRACT_HASH,
-        tribblerAddr=TRIBBLER_CONTRACT_HASH,
+        utilsAddr=None,
+        tribblerAddr=None,
     )
 
     tribbler.signupTx(user)
 
-    file_name = "parallel_post"
-    now = int(time.time())
+    file_name = "parallel_post_local"
+    # now = int(time.time())
 
-    final_file_name = "_".join([file_name, str(gas_price), str(now), user, ".csv"])
+    final_file_name = "_".join(
+        [file_name, str(gas_price), str(timestamp), user, ".csv"]
+    )
 
-    f = open(join("..", "data", final_file_name), "w")
+    pwd = os.getcwd()
+
+    f = open(join(pwd, "data", final_file_name), "w")
     for trib_num in range(1, num_tribs + 1):
         start = time.time()
         tribbler.postTx(user, "trib" + str(trib_num))
@@ -49,20 +54,30 @@ def run(gas_price: int, num_tribs: int, user: str):
     f.close()
 
 
-# gas_prices = [GAS_PRICE_SAFE_LOW, GAS_PRICE_STANDARD, GAS_PRICE_FAST]
-num_tribs = 100
-n_processes = 2
-# for gas_price in gas_prices:
+def main():
+    # account = accounts.load("test-account1")
+    account = accounts[7]
 
-users = ["raghav", "rajdeep"]
-processes = []
+    timestamp = int(time.time())
 
-for i in range(n_processes):
-    p = Process(target=run, args=(GAS_PRICE_STANDARD, num_tribs, users[i]))
-    processes.append(p)
-    # Pin created processes in a round-robin
-    system("taskset -p -c %d %d" % ((i % cpu_count()), p.pid))
-    p.start()
+    # gas_prices = [GAS_PRICE_SAFE_LOW, GAS_PRICE_STANDARD, GAS_PRICE_FAST]
+    num_tribs = 2
+    n_processes = 3
+    # for gas_price in gas_prices:
 
-for process in processes:
-    process.wait()
+    users = ["raghav", "rajdeep", "harsh"]
+    processes = []
+
+    for i in range(n_processes):
+        p = Process(
+            target=run,
+            args=(GAS_PRICE_STANDARD, num_tribs, users[i], account, timestamp),
+        )
+        processes.append(p)
+        # Pin created processes in a round-robin
+        p.start()
+        print(i, cpu_count(), i % cpu_count(), p.pid)
+        system("taskset -p -c %d %d" % ((i % cpu_count()), p.pid))
+
+    for process in processes:
+        process.wait()

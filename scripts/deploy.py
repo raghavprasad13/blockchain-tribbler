@@ -79,10 +79,10 @@ class TribblerMain:
         gas_used = 0
         tx = self.contract.followOrUnfollow(who, whom, {"from": self.account})
         tx.wait(1)
-        success = tx.return_value
+        # success = tx.return_value
 
-        if not success:
-            return None
+        # if not success:
+        #     return None
 
         tx_hash = tx.txid[2:]
         gas_used += tx.gas_used
@@ -115,10 +115,10 @@ class TribblerMain:
         gas_used = 0
         tx = self.contract.post(who, message, {"from": self.account})
         tx.wait(1)
-        success = tx.return_value
+        # success = tx.return_value
 
-        if not success:
-            return None
+        # if not success:
+        #     return None
 
         tx_index = tx.txindex
         timestamp = int(time.time())
@@ -142,10 +142,10 @@ class TribblerMain:
         tx = self.contract.signup(username, {"from": self.account})
         tx.wait(1)
 
-        success = tx.return_value
+        # success = tx.return_value
 
-        if not success:
-            return None, None
+        # if not success:
+        #     return None, None
         return tx, tx.gas_used
 
     def listUsersTx(self) -> List[str]:
