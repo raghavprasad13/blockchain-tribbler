@@ -4,10 +4,8 @@ from brownie import (
     accounts,
     config,
     Tribbler,
-    Utils,
-    Tribs,
-    Constants,
-    String,
+    # Utils,
+    User,
     network,
 )
 from .constants import *
@@ -15,7 +13,7 @@ from .utils import *
 
 
 class TribblerMain:
-    def __init__(self, account, utilsAddr=None, tribblerAddr=None):
+    def __init__(self, account, tribblerAddr=None):
         self.account = account
         self.init_gas_used = 0
 
@@ -25,11 +23,11 @@ class TribblerMain:
         # contract = Tribs.deploy({"from": self.account})
         # self.init_gas_used += contract.tx.gas_used
 
-        if utilsAddr is None:
-            self.utils_contract = Utils.deploy({"from": self.account})
-            self.init_gas_used += self.utils_contract.tx.gas_used
-        else:
-            self.utils_contract = Utils.at(utilsAddr)
+        # if utilsAddr is None:
+        #     self.utils_contract = Utils.deploy({"from": self.account})
+        #     self.init_gas_used += self.utils_contract.tx.gas_used
+        # else:
+        #     self.utils_contract = Utils.at(utilsAddr)
 
         if tribblerAddr is None:
             self.contract = Tribbler.deploy({"from": self.account})
@@ -39,9 +37,122 @@ class TribblerMain:
 
     def getContractAddress(self):
         return {
-            "utils_contract": self.utils_contract.address,
+            # "utils_contract": self.utils_contract.address,
             "tribbler_contract": self.contract.address,
         }
+
+    # def isUserExists(self, username: str) -> bool:
+    #     print(self.contract.isUserExists(username))
+
+    def getUserContract(self, username: str):
+        # check username is valid before calling this
+        # check isValidUsername
+        if not isValidUsername(username):
+            return None
+
+        # check if user exists
+        if not self.contract.isUserExists(username):
+            # print(self.contract.isUserExists(username))
+            return None
+
+        userContractAddr = self.contract.getUserContractAddr(username)
+
+        userContractAddr = (
+            "0x" + userContractAddr
+        )  # prepend 0x which is not stored in tribbler contract string
+        # print(userContractAddr)
+
+        userContract = User.at(userContractAddr)
+
+        return userContract
+
+    def signupTx(self, username: str) -> network.transaction.TransactionReceipt:
+        # check isValidUsername
+        if not isValidUsername(username):
+            return None, None
+
+        # check if user exists
+        if self.contract.isUserExists(username):
+            return None
+
+        # create user contract
+        userContract = User.deploy(username, {"from": self.account})
+        # print(userContract.address)
+
+        # update address of user contract in tribbler contract
+        tx = self.contract.signup(
+            username, userContract.address[2:], {"from": self.account}
+        )
+        tx.wait(1)
+
+        success = tx.return_value
+
+        if not success:
+            return None, None
+        return tx, tx.gas_used
+
+    def listUsersTx(self) -> List[str]:
+        users = list(self.contract.listUsers())
+        users.sort()
+
+        return users
+
+    def postTx(self, who: str, message: str) -> network.transaction.TransactionReceipt:
+        if isLongTrib(message):
+            return None, None
+
+        if not isValidUsername(who):
+            return None, None
+
+        # get user contract
+        userContract = self.getUserContract(who)
+
+        gas_used = 0
+        # tx = self.contract.post(who, message, {"from": self.account})
+        tx = userContract.post(message, {"from": self.account})
+        tx.wait(1)
+        success = tx.return_value
+
+        if not success:
+            return None
+
+        tx_index = tx.txindex
+        timestamp = int(time.time())
+        block_num = tx.block_number
+
+        gas_used += tx.gas_used
+
+        # tx = self.contract.addTrib(
+        #     who, message, timestamp, block_num, tx_index, {"from": self.account}
+        # )
+        tx = userContract.addTrib(
+            message, timestamp, block_num, tx_index, {"from": self.account}
+        )
+        tx.wait(1)
+        gas_used += tx.gas_used
+
+        return tx, gas_used
+
+    def tribsTx(self, username: str):
+        if not isValidUsername(username):
+            return None
+
+        # get user contract
+        userContract = self.getUserContract(username)
+
+        # tribs = list(self.contract.tribs(username))
+        tribs = list(userContract.tribs())
+        tribs = [tuple(trib) for trib in tribs]
+
+        tribs = sorted(
+            tribs, key=lambda trib: (-trib[3], trib[4], trib[2], trib[1], trib[0])
+        )
+
+        # check length of tribs
+        if len(tribs) > MAX_TRIB_FETCH:
+            tribs = tribs[:MAX_TRIB_FETCH]
+
+        return tribs
 
     def followTx(self, who: str, whom: str) -> network.transaction.TransactionReceipt:
         tx, gas_used, isConcurrentSuccessful = self.followOrUnfollowTx(True, who, whom)
@@ -62,6 +173,9 @@ class TribblerMain:
         if whoWhomSame(who, whom):
             return None, None
 
+        if not self.contract.isUserExists(who) or not self.contract.isUserExists(whom):
+            return None, None
+
         followingList = self.followingTx(who)
 
         if len(followingList) >= MAX_FOLLOWING:
@@ -76,8 +190,12 @@ class TribblerMain:
             # already not following
             return None, None
 
+        # get user contract
+        userContract = self.getUserContract(who)
+
         gas_used = 0
-        tx = self.contract.followOrUnfollow(who, whom, {"from": self.account})
+        # tx = self.contract.followOrUnfollow(who, whom, {"from": self.account})
+        tx = userContract.followOrUnfollow(who, whom, {"from": self.account})
         tx.wait(1)
         success = tx.return_value
 
@@ -87,14 +205,18 @@ class TribblerMain:
         tx_hash = tx.txid[2:]
         gas_used += tx.gas_used
 
-        tx = self.contract.appendToFollowUnfollowLog(
-            isFollow, who, whom, tx_hash, {"from": self.account}
+        # tx = self.contract.appendToFollowUnfollowLog(
+        #     isFollow, who, whom, tx_hash, {"from": self.account}
+        # )
+        tx = userContract.appendToFollowUnfollowLog(
+            isFollow, whom, tx_hash, {"from": self.account}
         )
         tx.wait(1)
         gas_used += tx.gas_used
 
         # again go through the log and check if this succeeded
-        followUnfollowLog = list(self.contract.following(who))
+        # followUnfollowLog = list(self.contract.following(who))
+        followUnfollowLog = list(userContract.following())
 
         # iterate from start and look for hash.
         for log_i in followUnfollowLog:
@@ -104,72 +226,6 @@ class TribblerMain:
                 return tx, gas_used, True
 
         # return tx, gas_used
-
-    def postTx(self, who: str, message: str) -> network.transaction.TransactionReceipt:
-        if isLongTrib(message):
-            return None, None
-
-        if not isValidUsername(who):
-            return None, None
-
-        gas_used = 0
-        tx = self.contract.post(who, message, {"from": self.account})
-        tx.wait(1)
-        success = tx.return_value
-
-        if not success:
-            return None
-
-        tx_index = tx.txindex
-        timestamp = int(time.time())
-        block_num = tx.block_number
-
-        gas_used += tx.gas_used
-
-        tx = self.contract.addTrib(
-            who, message, timestamp, block_num, tx_index, {"from": self.account}
-        )
-        tx.wait(1)
-        gas_used += tx.gas_used
-
-        return tx, gas_used
-
-    def signupTx(self, username: str) -> network.transaction.TransactionReceipt:
-        # check isValidUsername
-        if not isValidUsername(username):
-            return None, None
-
-        tx = self.contract.signup(username, {"from": self.account})
-        tx.wait(1)
-
-        success = tx.return_value
-
-        if not success:
-            return None, None
-        return tx, tx.gas_used
-
-    def listUsersTx(self) -> List[str]:
-        users = list(self.contract.listUsers())
-        users.sort()
-
-        return users
-
-    def tribsTx(self, username: str):
-        if not isValidUsername(username):
-            return None
-
-        tribs = list(self.contract.tribs(username))
-        tribs = [tuple(trib) for trib in tribs]
-
-        tribs = sorted(
-            tribs, key=lambda trib: (-trib[3], trib[4], trib[2], trib[1], trib[0])
-        )
-
-        # check length of tribs
-        if len(tribs) > MAX_TRIB_FETCH:
-            tribs = tribs[:MAX_TRIB_FETCH]
-
-        return tribs
 
     def isFollowingTx(self, who: str, whom: str) -> bool:
         if not isValidUsername(who) or not isValidUsername(whom):
@@ -182,7 +238,11 @@ class TribblerMain:
         if not isValidUsername(username):
             return None
 
-        followUnfollowLog = list(self.contract.following(username))
+        # get user contract
+        userContract = self.getUserContract(username)
+
+        # followUnfollowLog = list(self.contract.following(username))
+        followUnfollowLog = list(userContract.following())
         # print(followUnfollowLog)
 
         followListSet = set()
@@ -210,7 +270,8 @@ class TribblerMain:
         followingList = self.followingTx(username)
 
         for followedUser in followingList:
-            userTribs = self.contract.tribs(followedUser)
+            # userTribs = self.contract.tribs(followedUser)
+            userTribs = list(self.tribsTx(followedUser))
 
             if len(userTribs) != 0:
                 homeList.extend(userTribs)
@@ -235,7 +296,7 @@ def deploy_tribbler():
 
     network.gas_price("50 gwei")
 
-    tribbler = TribblerMain(accounts[5])
+    tribbler = TribblerMain(accounts[6])
     tx_types_gas_used = {
         method_name: 0
         for method_name in dir(tribbler)
@@ -310,8 +371,42 @@ def deploy_tribbler():
     print(f"init gas: {tribbler.init_gas_used}")
 
 
-def main():
-    # deploy_tribbler()
-    tribbler = TribblerMain(accounts[6])
+def test_tribbler():
+    network.gas_price("50 gwei")
 
-    print(tribbler.getContractAddress())
+    tribbler = TribblerMain(accounts[5])
+
+    usernames = ["raghav", "harsh", "rajdeep"]
+
+    for username in usernames:
+        # tribbler.isUserExists(username)
+        tribbler.signupTx(username)
+        # tribbler.isUserExists(username)
+        # tribbler.getUserContract(username)
+
+        # userContract = tribbler.getUserContract(username)
+        # if userContract is not None:
+        #     print(userContract.getUsername())
+
+    print(tribbler.listUsersTx())
+
+    # test post and tribs
+    for username in usernames:
+        for i in range(5):  # post 5 tribs per user
+            tribbler.postTx(username, "trib" + str(i))
+
+        print(tribbler.tribsTx(username))
+
+
+def main():
+    deploy_tribbler()
+    # test_tribbler()
+
+    # tribbler = TribblerMain(accounts[6])
+    # print(tribbler.getContractAddress())
+
+    # deploy to ropsten
+    # network.gas_price("50 gwei")
+    # account = accounts.load("test-account1")
+    # tribbler = TribblerMain(account)
+    # print(tribbler.getContractAddress())

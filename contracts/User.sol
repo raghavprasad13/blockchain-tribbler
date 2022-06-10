@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.0;
 
-import "./Utils.sol";
+// import "./Utils.sol";
 
 contract User {
     struct FollowUnfollowLogItem {
@@ -12,8 +12,17 @@ contract User {
         string txHash;
     }
 
+    struct Trib {
+        string who;
+        string message;
+        uint256 timestamp;
+        uint256 blockNum;
+        uint256 txIndex; // because we cannot get txIndex. Update: we can get txIndex, but then the operation will have to be broken up into 2 transactions
+    }
+
     string username;
-    Utils.Trib[] _tribs;
+    // Utils.Trib[] _tribs;
+    Trib[] _tribs;
     FollowUnfollowLogItem[] followUnfollowLog;
     string[] _following;
 
@@ -21,7 +30,38 @@ contract User {
         username = _username;
     }
 
-    function post(Utils.Trib memory trib) public returns (bool) {
+    function getUsername() public view returns (string memory) {
+        return username;
+    }
+
+
+
+    function post(string memory post)
+        public
+        returns (bool)
+    {
+        // this function must remain `non-pure`
+
+        return true;
+    }
+
+    function addTrib(
+        string memory message,
+        uint256 timestamp,
+        uint256 blockNum,
+        uint256 txIndex
+    ) public returns (bool) {
+        Trib memory trib = Trib(
+            username,
+            message,
+            timestamp,
+            blockNum,
+            txIndex
+        );
+
+        // User user = usernameUserMapping[username];
+        // return user.post(trib);
+
         _tribs.push(trib);
 
         // need to cleanup old tribs - DELAY for now
@@ -29,8 +69,20 @@ contract User {
         return true;
     }
 
-    function tribs() public view returns (Utils.Trib[] memory) {
+
+    function tribs() public view returns (Trib[] memory) {
         return _tribs;
+    }
+
+
+
+    function followOrUnfollow(string memory who, string memory whom)
+        public
+        returns (bool)
+    {
+        // this function must remain `non-pure`
+        
+        return true;
     }
 
     function appendToFollowUnfollowLog(
@@ -46,6 +98,8 @@ contract User {
         });
 
         followUnfollowLog.push(logItem);
+
+        // Log cleanup - DELAY for now
 
         // delete _following;
 

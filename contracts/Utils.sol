@@ -138,107 +138,107 @@ library Utils {
     //     return true;
     // }
 
-    function getIndex(string[] memory arr, string memory elem)
-        public
-        pure
-        returns (int256)
-    {
-        for (uint256 i = 0; i < arr.length; i++) {
-            if (
-                keccak256(abi.encodePacked(arr[i])) ==
-                keccak256(abi.encodePacked(elem))
-            ) return int256(i);
-        }
-        return -1;
-    }
+    // function getIndex(string[] memory arr, string memory elem)
+    //     public
+    //     pure
+    //     returns (int256)
+    // {
+    //     for (uint256 i = 0; i < arr.length; i++) {
+    //         if (
+    //             keccak256(abi.encodePacked(arr[i])) ==
+    //             keccak256(abi.encodePacked(elem))
+    //         ) return int256(i);
+    //     }
+    //     return -1;
+    // }
 
-    // NOTE: All of the delete functions delete data inplace and therefore perform array resizing
+    // // NOTE: All of the delete functions delete data inplace and therefore perform array resizing
 
-    // Use this function if you want to delete the element at the specified
-    // index but you don't care about the order of the elements in the array
-    // This is more efficient than deleteAtIndex and should be used to save gas
-    function deleteAtIndexUnordered(string[] storage arr, uint256 index)
-        public
-        returns (string[] memory)
-    {
-        uint256 size = arr.length;
-        require(size > 0, "EmptyArray");
-        require(index < size && index >= 0, "ArrayIndexOutOfBounds");
+    // // Use this function if you want to delete the element at the specified
+    // // index but you don't care about the order of the elements in the array
+    // // This is more efficient than deleteAtIndex and should be used to save gas
+    // function deleteAtIndexUnordered(string[] storage arr, uint256 index)
+    //     public
+    //     returns (string[] memory)
+    // {
+    //     uint256 size = arr.length;
+    //     require(size > 0, "EmptyArray");
+    //     require(index < size && index >= 0, "ArrayIndexOutOfBounds");
 
-        arr[index] = arr[size - 1]; // replace element at "index" with last element of array
-        arr.pop(); // remove last element of array
+    //     arr[index] = arr[size - 1]; // replace element at "index" with last element of array
+    //     arr.pop(); // remove last element of array
 
-        return arr;
-    }
+    //     return arr;
+    // }
 
-    function deleteAtIndexUnordered(Trib[] storage arr, uint256 index)
-        public
-        returns (Trib[] memory)
-    {
-        uint256 size = arr.length;
-        require(size > 0, "EmptyArray");
-        require(index < size && index >= 0, "ArrayIndexOutOfBounds");
+    // function deleteAtIndexUnordered(Trib[] storage arr, uint256 index)
+    //     public
+    //     returns (Trib[] memory)
+    // {
+    //     uint256 size = arr.length;
+    //     require(size > 0, "EmptyArray");
+    //     require(index < size && index >= 0, "ArrayIndexOutOfBounds");
 
-        arr[index] = arr[size - 1];
-        arr.pop();
+    //     arr[index] = arr[size - 1];
+    //     arr.pop();
 
-        return arr;
-    }
+    //     return arr;
+    // }
 
-    // delete element at given index and shift all the other elements in the same order
-    function deleteAtIndex(string[] storage arr, uint256 index)
-        public
-        returns (string[] memory)
-    {
-        uint256 size = arr.length;
-        require(size > 0, "EmptyArray");
-        require(index < size && index >= 0, "ArrayIndexOutOfBounds");
+    // // delete element at given index and shift all the other elements in the same order
+    // function deleteAtIndex(string[] storage arr, uint256 index)
+    //     public
+    //     returns (string[] memory)
+    // {
+    //     uint256 size = arr.length;
+    //     require(size > 0, "EmptyArray");
+    //     require(index < size && index >= 0, "ArrayIndexOutOfBounds");
 
-        for (uint256 i = index; i < size - 1; i++) {
-            // i goes till size-2 so that i+1 goes till size-1
-            arr[i] = arr[i + 1];
-        }
-        arr.pop();
+    //     for (uint256 i = index; i < size - 1; i++) {
+    //         // i goes till size-2 so that i+1 goes till size-1
+    //         arr[i] = arr[i + 1];
+    //     }
+    //     arr.pop();
 
-        return arr;
-    }
+    //     return arr;
+    // }
 
-    function deleteAtIndex(Trib[] storage arr, uint256 index)
-        public
-        returns (Trib[] memory)
-    {
-        uint256 size = arr.length;
-        require(size > 0, "EmptyArray");
-        require(index < size && index >= 0, "ArrayIndexOutOfBounds");
+    // function deleteAtIndex(Trib[] storage arr, uint256 index)
+    //     public
+    //     returns (Trib[] memory)
+    // {
+    //     uint256 size = arr.length;
+    //     require(size > 0, "EmptyArray");
+    //     require(index < size && index >= 0, "ArrayIndexOutOfBounds");
 
-        for (uint256 i = index; i < size - 1; i++) {
-            // i goes till size-2 so that i+1 goes till size-1
-            arr[i] = arr[i + 1];
-        }
-        arr.pop();
+    //     for (uint256 i = index; i < size - 1; i++) {
+    //         // i goes till size-2 so that i+1 goes till size-1
+    //         arr[i] = arr[i + 1];
+    //     }
+    //     arr.pop();
 
-        return arr;
-    }
+    //     return arr;
+    // }
 
-    // Append one in-memory array to another
-    function appendArray(Trib[] memory arr1, Trib[] memory arr2)
-        public
-        pure
-        returns (Trib[] memory)
-    {
-        Trib[] memory res = new Trib[](arr1.length + arr2.length);
+    // // Append one in-memory array to another
+    // function appendArray(Trib[] memory arr1, Trib[] memory arr2)
+    //     public
+    //     pure
+    //     returns (Trib[] memory)
+    // {
+    //     Trib[] memory res = new Trib[](arr1.length + arr2.length);
 
-        uint256 i;
-        for (i = 0; i < arr1.length; i++) {
-            res[i] = arr1[i];
-            if (i < arr2.length) res[i + arr1.length] = arr2[i];
-        }
+    //     uint256 i;
+    //     for (i = 0; i < arr1.length; i++) {
+    //         res[i] = arr1[i];
+    //         if (i < arr2.length) res[i + arr1.length] = arr2[i];
+    //     }
 
-        while (i < arr2.length) {
-            res[i + arr1.length] = arr2[i];
-            i++;
-        }
+    //     while (i < arr2.length) {
+    //         res[i + arr1.length] = arr2[i];
+    //         i++;
+    //     }
 
-        return res;
-    }
+    //     return res;
+    // }
 }
