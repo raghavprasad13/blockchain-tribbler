@@ -56,7 +56,7 @@ class TribblerMain:
 
         # check if user exists
         if self.contract.isUserExists(username):
-            return None
+            return None, None
 
         # create user contract
         userContract = User.deploy(username, {"from": self.account})
@@ -359,5 +359,5 @@ def main():
     deploy_tribbler()
 
 
-if __name__ is "__main__":
+if __name__ == "__main__":
     main()
