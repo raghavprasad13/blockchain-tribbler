@@ -2,12 +2,8 @@ from typing import List
 import time
 from brownie import (
     accounts,
-    config,
     Tribbler,
     Utils,
-    Tribs,
-    Constants,
-    String,
     network,
 )
 from .constants import *

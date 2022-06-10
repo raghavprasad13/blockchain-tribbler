@@ -1,61 +1,43 @@
 from . import deploy
-from brownie import accounts
+from brownie import accounts, Utils, Tribbler, reverts
 
 
 def test_signup1():
 
-    # arrange
     tribbler = deploy.TribblerMain(accounts[6])
 
-    # act
     test_username = "u1"
-    tx = tribbler.signupTx(test_username)
-    tx.wait(1)
+    tx, _ = tribbler.signupTx(test_username)
 
     expected_output = True
 
-    # list_usernames = tribbler.usernames
-    # print(list_usernames[0])
-
-    # assert
     assert tx.return_value == expected_output
 
 
 def test_signup2():
-    account = accounts[0]
+    tribbler = deploy.TribblerMain(accounts[6])
 
-    # arrange
-    Utils.deploy({"from": account})
-    tribbler = Tribbler.deploy({"from": account})
-
-    # act
     test_username = "1u"
+    ret, _ = tribbler.signupTx(test_username)
 
-    with reverts("Username is invalid"):
-        tribbler.signup(test_username)
+    assert ret == None
 
 
 def test_signup3():
-    account = accounts[0]
+    tribbler = deploy.TribblerMain(accounts[6])
 
-    # arrange
-    Utils.deploy({"from": account})
-    tribbler = Tribbler.deploy({"from": account})
-
-    # act
     test_username = "uV"
-    with reverts("Username is invalid"):
-        tribbler.signup(test_username)
+    ret, _ = tribbler.signupTx(test_username)
+
+    assert ret == None
 
 
 def test_signup4():
     account = accounts[0]
 
-    # arrange
     Utils.deploy({"from": account})
     tribbler = Tribbler.deploy({"from": account})
 
-    # act
     test_username = "u1"
     tribbler.signup(test_username)
 
@@ -66,24 +48,12 @@ def test_signup4():
 def test_listUsers():
     account = accounts[0]
 
-    # network.gas_price("50 gwei")
-
-    # arrange
     Utils.deploy({"from": account})
     tribbler = Tribbler.deploy({"from": account})
 
-    # act
     tribbler.signup("u3")
-    # tx.wait(1)
-    # print(tx.return_value)
-
     tribbler.signup("u2")
-    # tx.wait(1)
-    # print(tx.return_value)
-
     tribbler.signup("u1")
-    # tx.wait(1)
-    # print(tx.return_value)
 
     list_users = list(tribbler.listUsers())
     list_users.sort()
@@ -95,13 +65,9 @@ def test_listUsers():
 def test_noUsers():
     account = accounts[0]
 
-    # arrange
     Utils.deploy({"from": account})
     tribbler = Tribbler.deploy({"from": account})
 
-    # act
-
-    # assert
     with reverts("No users exist"):
         tribbler.listUsers()
 
@@ -109,14 +75,11 @@ def test_noUsers():
 def test_minListUser():
     account = accounts[0]
 
-    # arrange
     Utils.deploy({"from": account})
     tribbler = Tribbler.deploy({"from": account})
 
-    # act
     for i in range(25, -1, -1):
         username = "u" + str(i)
-        # print(username)
         tribbler.signup(username)
 
     listUsers = list(tribbler.listUsers())
