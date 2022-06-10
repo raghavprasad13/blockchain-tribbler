@@ -2,8 +2,6 @@
 
 pragma solidity ^0.8.0;
 
-// import "./Utils.sol";
-
 contract User {
     struct FollowUnfollowLogItem {
         // bool isValid;
@@ -21,7 +19,6 @@ contract User {
     }
 
     string username;
-    // Utils.Trib[] _tribs;
     Trib[] _tribs;
     FollowUnfollowLogItem[] followUnfollowLog;
     string[] _following;
@@ -34,12 +31,7 @@ contract User {
         return username;
     }
 
-
-
-    function post(string memory post)
-        public
-        returns (bool)
-    {
+    function post(string memory post) public returns (bool) {
         // this function must remain `non-pure`
 
         return true;
@@ -58,30 +50,20 @@ contract User {
             blockNum,
             txIndex
         );
-
-        // User user = usernameUserMapping[username];
-        // return user.post(trib);
-
         _tribs.push(trib);
-
-        // need to cleanup old tribs - DELAY for now
 
         return true;
     }
 
-
     function tribs() public view returns (Trib[] memory) {
         return _tribs;
     }
-
-
 
     function followOrUnfollow(string memory who, string memory whom)
         public
         returns (bool)
     {
         // this function must remain `non-pure`
-        
         return true;
     }
 
@@ -91,64 +73,12 @@ contract User {
         string memory txHash
     ) public returns (bool) {
         FollowUnfollowLogItem memory logItem = FollowUnfollowLogItem({
-            // isValid: true,
             isFollow: isFollow,
             whom: whom,
             txHash: txHash
         });
 
         followUnfollowLog.push(logItem);
-
-        // Log cleanup - DELAY for now
-
-        // delete _following;
-
-        // for (uint256 i = 0; i < followUnfollowLog.length; i++) {
-        //     FollowUnfollowLogItem storage _logItem = followUnfollowLog[i];
-
-        //     if (_logItem.isFollow) {
-        //         if (Utils.getIndex(_following, _logItem.whom) != -1) {
-        //             _logItem.isValid = false;
-        //         } else {
-        //             _following.push(_logItem.whom);
-        //         }
-        //     } else {
-        //         int256 idx = Utils.getIndex(_following, _logItem.whom);
-        //         if (idx != -1) {
-        //             _following = Utils.deleteAtIndexUnordered(
-        //                 _following,
-        //                 uint256(idx)
-        //             );
-        //         } else {
-        //             _logItem.isValid = false;
-        //         }
-        //     }
-        // }
-
-        // uint256 followingCount = _following.length;
-        // require(
-        //     followingCount <= Utils.MAX_FOLLOWING,
-        //     "Following too many people"
-        // );
-
-        // bool followResult;
-        // bool foundLogEntry;
-
-        // for (uint256 i = 0; i < followUnfollowLog.length; i++) {
-        //     FollowUnfollowLogItem storage _logItem = followUnfollowLog[i];
-        //     if (
-        //         Utils.string_compare(_logItem.whom, whom) == 0 &&
-        //         Utils.string_compare(_logItem.txHash, txHash) == 0
-        //     ) {
-        //         followResult = _logItem.isValid;
-        //         foundLogEntry = true;
-        //     }
-        // }
-
-        // if (!(foundLogEntry && followResult)) {
-        //     return false; // already following
-        // }
-
         return true;
     }
 
