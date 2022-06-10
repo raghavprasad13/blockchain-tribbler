@@ -11,7 +11,6 @@ contract Tribbler {
     string[] usernameArray; // this will be used for listUsers
 
     function signup(string memory username) public returns (bool) {
-        // require(Utils.isValidUsername(username), "Username is invalid"); - checked in frontend in python
         require(!usernames[username], "User already exists");
 
         User user = new User(username);
@@ -71,15 +70,6 @@ contract Tribbler {
         public
         returns (bool)
     {
-        // this function must remain `non-pure`
-        // require(
-        //     !Utils.whoWhomSame(who, whom),
-        //     "Both the usernames are the same"
-        // );
-        // require(
-        //     Utils.isValidUsername(who) && Utils.isValidUsername(whom),
-        //     "Username is invalid"
-        // );
         require(usernames[who] && usernames[whom], "User does not exist");
 
         return true;
@@ -100,40 +90,9 @@ contract Tribbler {
         view
         returns (User.FollowUnfollowLogItem[] memory)
     {
-        // require(Utils.isValidUsername(username), "Username is invalid");
         require(usernames[username], "User does not exist");
 
-        // User user = users[msg.sender];
         User user = usernameUserMapping[username];
         return user.following();
     }
-
-    // function home(string memory username)
-    //     public
-    //     view
-    //     returns (Utils.Trib[] memory)
-    // {
-    //     // require(Utils.isValidUsername(username), "Username is invalid");
-    //     require(usernames[username], "User does not exist");
-
-    //     User user = usernameUserMapping[username];
-
-    //     // get own tribs first
-    //     Utils.Trib[] memory homeList = user.tribs();
-
-    //     // get following
-    //     User.FollowUnfollowLogItem[] memory followList = user.following();
-
-    //     for (uint256 i = 0; i < followList.length; i++) {
-    //         User.FollowUnfollowLogItem memory _followedUser = followList[i];
-    //         string memory followedUsername = _followedUser.whom;
-    //         if (!usernames[followedUsername]) continue;
-
-    //         User followedUser = usernameUserMapping[followedUsername];
-    //         Utils.Trib[] memory followedUserTribs = followedUser.tribs();
-    //         homeList = Utils.appendArray(homeList, followedUserTribs);
-    //     }
-
-    //     return homeList;
-    // }
 }
