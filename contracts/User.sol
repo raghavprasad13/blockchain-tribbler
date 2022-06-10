@@ -2,7 +2,6 @@
 
 pragma solidity ^0.8.0;
 
-// import "../Seriality/src/Seriality.sol";
 import "./Utils.sol";
 import "./String.sol";
 import "./Tribs.sol";
@@ -44,8 +43,6 @@ contract User {
         }
 
         return _tribs;
-        // Tribs.Trib[] memory mem_tribs = _tribs;
-        // return mem_tribs;
     }
 
     function appendToFollowUnfollowLog(
@@ -143,6 +140,6 @@ contract User {
             }
         }
 
-        return _following; // maybe have a Util function to convert storage to memory?
+        return _following;
     }
 }

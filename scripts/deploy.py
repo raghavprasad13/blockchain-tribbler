@@ -1,12 +1,10 @@
-from typing import List
+from typing import List, Tuple
 import time
 from brownie import (
     accounts,
-    config,
     Tribbler,
     Utils,
     Tribs,
-    Constants,
     String,
     network,
 )
@@ -29,19 +27,23 @@ class TribblerMain:
         self.contract = Tribbler.deploy({"from": self.account})
         self.init_gas_used += self.contract.tx.gas_used
 
-    def followTx(self, who: str, whom: str) -> network.transaction.TransactionReceipt:
+    def followTx(
+        self, who: str, whom: str
+    ) -> Tuple[network.transaction.TransactionReceipt, int]:
         tx, gas_used = self.followOrUnfollowTx(True, who, whom)
 
         return tx, gas_used
 
-    def unfollowTx(self, who: str, whom: str) -> network.transaction.TransactionReceipt:
+    def unfollowTx(
+        self, who: str, whom: str
+    ) -> Tuple[network.transaction.TransactionReceipt, int]:
         tx, gas_used = self.followOrUnfollowTx(False, who, whom)
 
         return tx, gas_used
 
     def followOrUnfollowTx(
         self, isFollow: bool, who: str, whom: str
-    ) -> network.transaction.TransactionReceipt:
+    ) -> Tuple[network.transaction.TransactionReceipt, int]:
         gas_used = 0
         tx = self.contract.followOrUnfollow(who, whom)
         tx.wait(1)
@@ -59,7 +61,9 @@ class TribblerMain:
 
         return tx, gas_used
 
-    def postTx(self, who: str, message: str) -> network.transaction.TransactionReceipt:
+    def postTx(
+        self, who: str, message: str
+    ) -> Tuple[network.transaction.TransactionReceipt, int]:
         gas_used = 0
         tx = self.contract.post(who, message)
         tx.wait(1)
@@ -80,7 +84,9 @@ class TribblerMain:
 
         return tx, gas_used
 
-    def signupTx(self, username: str) -> network.transaction.TransactionReceipt:
+    def signupTx(
+        self, username: str
+    ) -> Tuple[network.transaction.TransactionReceipt, int]:
         tx = self.contract.signup(username)
         tx.wait(1)
 
@@ -90,18 +96,20 @@ class TribblerMain:
             return None
         return tx, tx.gas_used
 
-    def listUsersTx(self) -> List[str]:
+    def listUsersTx(self) -> Tuple[List[str], int]:
         tx = self.contract.listUsers()
 
         return tx.return_value, tx.gas_used
 
-    def tribsTx(self, username: str) -> network.transaction.TransactionReceipt:
+    def tribsTx(
+        self, username: str
+    ) -> Tuple[network.transaction.TransactionReceipt, int]:
         tx = self.contract.tribs(username)
         tx.wait(1)
 
         return tx, tx.gas_used
 
-    def isFollowingTx(self, who: str, whom: str) -> bool:
+    def isFollowingTx(self, who: str, whom: str) -> Tuple[bool, int]:
         tx = self.contract.isFollowing(who, whom)
         tx.wait(1)
 
@@ -113,7 +121,9 @@ class TribblerMain:
 
         return tx.return_value, tx.gas_used
 
-    def homeTx(self, username: str) -> network.transaction.TransactionReceipt:
+    def homeTx(
+        self, username: str
+    ) -> Tuple[network.transaction.TransactionReceipt, int]:
         tx = self.contract.home(username)
         tx.wait(1)
 
@@ -160,10 +170,6 @@ def deploy_tribbler():
     tx_types_gas_used.update({"isFollowingTx": gas_used})
     total_gas_used += gas_used
 
-    # _, gas_used = tribbler.listUsersTx()
-    # tx_types_gas_used.update({"listUsersTx": gas_used})
-    # total_gas_used += gas_used
-
     _, gas_used = tribbler.tribsTx("raghav")
     tx_types_gas_used.update({"tribsTx": gas_used})
     total_gas_used += gas_used
@@ -173,7 +179,12 @@ def deploy_tribbler():
     total_gas_used += gas_used
 
     print(tx_types_gas_used)
+    print(f"init_gas: {tribbler.init_gas_used}")
 
 
 def main():
     deploy_tribbler()
+
+
+if __name__ == "__main__":
+    main()

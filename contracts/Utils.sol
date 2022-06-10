@@ -155,9 +155,6 @@ library Utils {
         // This copies from "memory" string[] variable to "storage" string[] variable
         // Take care that copy is empty before passing it in here
 
-        // do we need a require here?
-        // require(copy.length == 0, "CopyArrayNotEmpty")
-
         for (uint256 i = 0; i < arr.length; i++) copy.push(arr[i]);
     }
 
@@ -179,9 +176,6 @@ library Utils {
     {
         // This copies from "memory" Tribs.Trib[] variable to "storage" Tribs.Trib[] variable
         // Take care that copy is empty before passing it in here
-
-        // do we need a require here?
-        // require(copy.length == 0, "CopyArrayNotEmpty")
 
         for (uint256 i = 0; i < arr.length; i++) copy.push(arr[i]);
     }
@@ -242,63 +236,6 @@ library Utils {
             k++;
         }
     }
-
-    // function sort(
-    //     string[] memory arr,
-    //     uint256 startIndex,
-    //     uint256 endIndex
-    // ) public {
-    //     if (startIndex < endIndex) {
-    //         uint256 mid = (startIndex + (endIndex - 1)) / 2;
-    //         sort(arr, startIndex, mid);
-    //         sort(arr, mid, endIndex);
-    //         merge(arr, startIndex, mid, endIndex);
-    //     }
-    // }
-
-    // function merge(
-    //     string[] memory arr,
-    //     uint256 left,
-    //     uint256 mid,
-    //     uint256 right
-    // ) public {
-    //     uint256 k;
-    //     uint256 n1 = mid - left + 1;
-    //     uint256 n2 = right - mid;
-
-    //     string[] memory L = new string[](n1);
-    //     string[] memory R = new string[](n2);
-
-    //     for (uint256 i = 0; i < n1; i++) L[i] = arr[left + i];
-    //     for (uint256 i = 0; i < n2; i++) R[i] = arr[mid + left + i];
-
-    //     uint256 _i = 0;
-    //     uint256 _j = 0;
-    //     k = left;
-
-    //     while (_i < n1 && _j < n2) {
-    //         if (String.compare(L[_i], R[_j]) == 1) {
-    //             arr[k] = L[_i];
-    //             _i++;
-    //         } else {
-    //             arr[k] = R[_j];
-    //             _j++;
-    //         }
-    //         k++;
-    //     }
-
-    //     while (_i < n1) {
-    //         arr[k] = L[_i];
-    //         _i++;
-    //         k++;
-    //     }
-
-    //     while (_j < n2) {
-    //         arr[k] = R[_j];
-    //         _j++;
-    //         k++;
-    //     }
-    // }
 
     function sort(
         Tribs.Trib[] memory arr,
@@ -394,8 +331,6 @@ library Utils {
                 }
             }
         }
-
-        // return arr;
     }
 
     function bubbleSort_memTribs(Tribs.Trib[] memory arr)

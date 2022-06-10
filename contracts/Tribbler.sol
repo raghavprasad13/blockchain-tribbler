@@ -26,17 +26,9 @@ contract Tribbler {
         return true;
     }
 
-    // why sort in place? sorting in place also makes a transaction
-    // function listUsers() public returns (string[] memory) {
-    //     require(usernameArray.length > 0, "No users exist");
-    //     Utils.sort(usernameArray, 0, usernameArray.length - 1);
-    //     return usernameArray;
-    // }
-
     // Using below function instead of above one. Sorting in python scripts for now
     function listUsers() public view returns (string[] memory) {
         require(usernameArray.length > 0, "No users exist");
-        //usernameArray = bubbleSort(usernameArray); // sorting takes too much time
         return usernameArray;
     }
 
@@ -108,7 +100,6 @@ contract Tribbler {
         string memory whom,
         string memory txHash
     ) public returns (bool) {
-        // User user = users[msg.sender];
         User user = usernameUserMapping[who];
         return user.appendToFollowUnfollowLog(isFollow, whom, txHash);
     }
@@ -127,7 +118,6 @@ contract Tribbler {
         );
         require(usernames[who] && usernames[whom], "User does not exist");
 
-        // User user = users[msg.sender];
         User user = usernameUserMapping[who];
         return user.isFollowing(whom);
     }
@@ -139,7 +129,6 @@ contract Tribbler {
         require(Utils.isValidUsername(username), "Username is invalid");
         require(usernames[username], "User does not exist");
 
-        // User user = users[msg.sender];
         User user = usernameUserMapping[username];
         return user.following();
     }
@@ -152,8 +141,6 @@ contract Tribbler {
 
         // get own tribs first
         Tribs.Trib[] memory homeList = user.tribs();
-
-        // TODO?: cleanup logs; maybe in following?
 
         string[] memory followList = user.following();
 
@@ -182,70 +169,6 @@ contract Tribbler {
         return returnHomeList;
     }
 
-    // function sort(
-    //     string[] memory arr,
-    //     uint256 startIndex,
-    //     uint256 endIndex
-    // ) public returns (string[] memory) {
-    //     if (startIndex < endIndex) {
-    //         uint256 mid = (startIndex + (endIndex - 1)) / 2;
-    //         arr = sort(arr, startIndex, mid);
-    //         arr = sort(arr, mid + 1, endIndex);
-    //         arr = merge(arr, startIndex, mid, endIndex);
-    //     }
-
-    //     return arr;
-    // }
-
-    // function merge(
-    //     string[] memory arr,
-    //     uint256 left,
-    //     uint256 mid,
-    //     uint256 right
-    // ) public pure returns (string[] memory) {
-    //     uint256 k;
-    //     uint256 n1 = mid - left + 1;
-    //     uint256 n2 = right - mid;
-
-    //     string[] memory L = new string[](n1);
-    //     string[] memory R = new string[](n2);
-
-    //     for (uint256 i = 0; i < n1; i++) L[i] = arr[left + i];
-    //     for (uint256 i = 0; i < n2; i++) {
-    //         // console.log("i = ", i);
-    //         R[i] = arr[mid + left + i];
-    //     }
-
-    //     uint256 _i = 0;
-    //     uint256 _j = 0;
-    //     k = left;
-
-    //     while (_i < n1 && _j < n2) {
-    //         if (String.compare(L[_i], R[_j]) == 1) {
-    //             arr[k] = L[_i];
-    //             _i++;
-    //         } else {
-    //             arr[k] = R[_j];
-    //             _j++;
-    //         }
-    //         k++;
-    //     }
-
-    //     while (_i < n1) {
-    //         arr[k] = L[_i];
-    //         _i++;
-    //         k++;
-    //     }
-
-    //     while (_j < n2) {
-    //         arr[k] = R[_j];
-    //         _j++;
-    //         k++;
-    //     }
-
-    //     return arr;
-    // }
-
     function bubbleSort(string[] memory arr)
         public
         pure
@@ -268,27 +191,4 @@ contract Tribbler {
 
         return arr;
     }
-
-    // function bubbleSort(Tribs.Trib[] memory arr)
-    //     public
-    //     pure
-    //     returns (Tribs.Trib[] memory)
-    // {
-    //     uint256 i;
-    //     uint256 j;
-    //     uint256 n = arr.length;
-    //     Tribs.Trib memory temp;
-    //     for (i = 0; i < n; i++) {
-    //         for (j = 0; j < n - i - 1; j++) {
-    //             if (Tribs.compare(arr[j], arr[j + 1]) == -1) {
-    //                 // arr[j+1] should appear above arr[j]
-    //                 temp = arr[j];
-    //                 arr[j] = arr[j + 1];
-    //                 arr[j + 1] = temp;
-    //             }
-    //         }
-    //     }
-
-    //     return arr;
-    // }
 }
