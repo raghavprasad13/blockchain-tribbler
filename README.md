@@ -16,7 +16,7 @@
 Our main frontend code is housed in `scripts/deploy.py`. The command to run that program is: `brownie run scripts/deploy.py`
 
 ## Running tests
-We have a few tests in the `tests` directory as well as a couple in the `scripts` directory. The command to run a test file is: `brownie test <path to test file>`. For instance, `brownie test scripts/test_python_tribbler.py`
+We have a couple of tests in the `scripts` directory. The command to run a test file is: `brownie test <path to test file>`. For instance, `brownie test scripts/test_python_tribbler.py`
 
 ## Backend code
 We are using the blockchain to serve as our backend. And the code we are using to communicate/perform operations on the backend is housed in the `contracts` directory. `contracts` contains Solidity smart contracts that define a main `Tribbler` contract and user-specific `User` contracts.

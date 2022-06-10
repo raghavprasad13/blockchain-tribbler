@@ -152,33 +152,33 @@ class TribblerMain:
         self, isFollow: bool, who: str, whom: str
     ) -> Tuple[network.transaction.TransactionReceipt, int, bool]:
         if not isValidUsername(who) or not isValidUsername(whom):
-            return None, None, None
+            return None, None, False
 
         if whoWhomSame(who, whom):
-            return None, None, None
+            return None, None, False
 
         if not self.contract.isUserExists(who) or not self.contract.isUserExists(whom):
-            return None, None, None
+            return None, None, False
 
         followingList = self.followingTx(who)
 
         if len(followingList) >= MAX_FOLLOWING:
             # following too many people. equal to check makes sure that if max following then this also won't get appended to the log
-            return None, None, None
+            return None, None, False
 
         if isFollow and whom in followingList:
             # already following
-            return None, None, None
+            return None, None, False
 
         if not isFollow and whom not in followingList:
             # already not following
-            return None, None, None
+            return None, None, False
 
         # get user contract
         userContract = self.getUserContract(who)
         # error check
         if userContract is None:
-            return None
+            return None, None, False
 
         gas_used = 0
         tx = userContract.followOrUnfollow(who, whom, {"from": self.account})
@@ -203,8 +203,6 @@ class TribblerMain:
                 return tx, gas_used, True
             else:
                 return tx, gas_used, True
-
-        # return tx, gas_used
 
     def isFollowingTx(self, who: str, whom: str) -> bool:
         if not isValidUsername(who) or not isValidUsername(whom):
@@ -233,7 +231,10 @@ class TribblerMain:
             elif log_i[0] == False:  # unfollow op
                 followListSet.remove(log_i[1])
 
-        return list(followListSet)
+        following_list = list(followListSet)
+        following_list.sort()
+
+        return following_list
 
     def homeTx(self, username: str) -> Tuple[str, str, int, int, int]:
         if not isValidUsername(username):
