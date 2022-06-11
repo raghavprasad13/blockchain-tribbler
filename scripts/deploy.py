@@ -2,6 +2,7 @@
 
 from typing import List, Tuple
 import time
+from wsgiref.simple_server import WSGIRequestHandler
 from brownie import accounts, Tribbler, User, network, config
 from .constants import *
 from .utils import *
