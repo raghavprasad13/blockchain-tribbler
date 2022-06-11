@@ -36,7 +36,7 @@ def main():
     account = accounts.add(config["wallets"]["from_key"])
     # account = accounts[0]
 
-    who = "demouser1"
-    whom = "demouser2"
+    who = "testuser1"
+    whom = "testuser2"
 
     demo_follow(account, who, whom)

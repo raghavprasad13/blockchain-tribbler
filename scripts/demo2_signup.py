@@ -38,5 +38,5 @@ def main():
     account = accounts.add(config["wallets"]["from_key"])
     # account = accounts[0]
 
-    username = "demouser2"
+    username = "testuser2"
     demo_signup(account, username)

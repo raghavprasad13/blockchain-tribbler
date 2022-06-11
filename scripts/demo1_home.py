@@ -26,7 +26,10 @@ def demo_home(account, username):
 
     homeTribList = tribbler.homeTx(username)
 
-    print(homeTribList)
+    fields = ["username", "message", "timestamp", "block_number", "tx_id"]
+
+    for trib in homeTribList:
+        print(trib)
 
 
 def main():
@@ -36,6 +39,6 @@ def main():
     account = accounts.add(config["wallets"]["from_key"])
     # account = accounts[0]
 
-    username = "demouser1"
+    username = "testuser1"
 
     demo_home(account, username)

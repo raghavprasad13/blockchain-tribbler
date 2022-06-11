@@ -30,7 +30,7 @@ def demo_post(account, username):
     print("trib A post complete")
 
     message2 = "trib B from user {}".format(username)
-    tribbler.postTx(username, message1)
+    tribbler.postTx(username, message2)
 
     print("trib B post complete")
 
@@ -42,5 +42,5 @@ def main():
     account = accounts.add(config["wallets"]["from_key"])
     # account = accounts[0]
 
-    username = "demouser2"
+    username = "testuser2"
     demo_post(account, username)
