@@ -125,7 +125,7 @@ class TribblerMain:
         tribs = [tuple(trib) for trib in tribs]
 
         tribs = sorted(
-            tribs, key=lambda trib: (-trib[3], trib[4], trib[2], trib[1], trib[0])
+            tribs, key=lambda trib: (-trib[3], -trib[4], trib[2], trib[1], trib[0])
         )
 
         # check length of tribs
@@ -253,7 +253,7 @@ class TribblerMain:
                 homeList.extend(userTribs)
 
         homeList = sorted(
-            homeList, key=lambda trib: (-trib[3], trib[4], trib[2], trib[1], trib[0])
+            homeList, key=lambda trib: (-trib[3], -trib[4], trib[2], trib[1], trib[0])
         )
 
         # check length of homeList
