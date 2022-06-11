@@ -2,6 +2,8 @@
 
 pragma solidity ^0.8.0;
 
+// main tribbler contract
+
 import "./User.sol";
 import "./Constants.sol";
 import "./Tribs.sol";
@@ -26,7 +28,7 @@ contract Tribbler {
         return true;
     }
 
-    // Using below function instead of above one. Sorting in python scripts for now
+    // Sorting in python scripts
     function listUsers() public view returns (string[] memory) {
         require(usernameArray.length > 0, "No users exist");
         return usernameArray;
@@ -37,6 +39,7 @@ contract Tribbler {
         returns (bool)
     {
         // this function must remain `non-pure`
+        // hash of this transaction will be used in the actual trib data structure
         require(
             bytes(_post).length < Constants.MAX_TRIB_LEN,
             "Post is too long"
@@ -46,6 +49,7 @@ contract Tribbler {
         return true;
     }
 
+    // Function to actually add a trib in blockchain
     function addTrib(
         string memory username,
         string memory message,
@@ -81,6 +85,7 @@ contract Tribbler {
         returns (bool)
     {
         // this function must remain `non-pure`
+        // hash of this transaction will be used in the actual trib data structure
         require(
             !Utils.whoWhomSame(who, whom),
             "Both the usernames are the same"
@@ -94,6 +99,7 @@ contract Tribbler {
         return true;
     }
 
+    // Function to actually add a follow or unfollow log in blockchain
     function appendToFollowUnfollowLog(
         bool isFollow,
         string memory who,
@@ -142,8 +148,10 @@ contract Tribbler {
         // get own tribs first
         Tribs.Trib[] memory homeList = user.tribs();
 
+        // get following list
         string[] memory followList = user.following();
 
+        // get tribs of users that this user follows
         for (uint256 i = 0; i < followList.length; i++) {
             string memory followedUsername = followList[i];
             if (!usernames[followedUsername]) continue;
@@ -153,6 +161,7 @@ contract Tribbler {
             homeList = Utils.appendArray(homeList, followedUserTribs);
         }
 
+        // sort tribs
         homeList = Utils.bubbleSort_memTribs(homeList);
 
         // return only top MAX_TRIB_FETCH tribs

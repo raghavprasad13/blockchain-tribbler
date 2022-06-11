@@ -2,6 +2,8 @@
 
 pragma solidity ^0.8.0;
 
+// Utility functions
+
 import "./Constants.sol";
 import "./String.sol";
 import "./Tribs.sol";

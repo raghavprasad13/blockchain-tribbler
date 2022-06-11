@@ -2,6 +2,8 @@
 
 pragma solidity ^0.8.0;
 
+// Library of all constants
+
 library Constants {
     uint16 public constant MAX_USERNAME_LEN = 15;
     uint16 public constant MAX_FOLLOWING = 2000;

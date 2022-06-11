@@ -2,6 +2,8 @@
 
 pragma solidity ^0.8.0;
 
+// Code to manage user specific oprations
+
 import "./Utils.sol";
 import "./String.sol";
 import "./Tribs.sol";
@@ -59,6 +61,7 @@ contract User {
 
         followUnfollowLog.push(logItem);
 
+        // regenerate following list
         delete _following;
 
         for (uint256 i = 0; i < followUnfollowLog.length; i++) {

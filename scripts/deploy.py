@@ -9,6 +9,8 @@ from brownie import (
     network,
 )
 
+# TribblerMain class acts as frontend and contains function wrappers to trigger required operations in blockchain
+
 
 class TribblerMain:
     def __init__(self, account):
@@ -130,6 +132,7 @@ class TribblerMain:
         return tx, tx.gas_used
 
 
+# Test function deploying tribbler contract
 def deploy_tribbler():
     tribbler = TribblerMain(accounts[0])
     tx_types_gas_used = {
@@ -149,6 +152,8 @@ def deploy_tribbler():
     total_gas_used += gas_used
 
     tribbler.signupTx("harsh")
+
+    tribbler.signupTx("rajdeep")
 
     _, gas_used = tribbler.postTx("raghav", "hello world, I am raghav")
     tx_types_gas_used.update({"postTx": gas_used})

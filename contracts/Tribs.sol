@@ -2,6 +2,8 @@
 
 pragma solidity ^0.8.0;
 
+// library of tribs structure and tribble order management
+
 import "./String.sol";
 
 library Tribs {
