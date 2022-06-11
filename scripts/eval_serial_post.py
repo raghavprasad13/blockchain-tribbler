@@ -1,5 +1,5 @@
 """
-sign up 1 user and make him post ~500 tribs
+Sign up users and make 100 tribs
 check time taken for different gas prices
 
 Usage: brownie run scripts/eval_serial_post
@@ -13,33 +13,20 @@ from .constants import (
     GAS_PRICE_SAFE_LOW,
     GAS_PRICE_STANDARD,
     TRIBBLER_CONTRACT_HASH,
-    # UTILS_CONTRACT_HASH,
     GAS_PRICE_COMMON,
 )
 from os.path import join
 import os
-import argparse
 
 
 def run(gas_price: int, num_tribs: int, account, timestamp):
     network.gas_price(str(gas_price) + " gwei")
-    # network.gas_limit(134440*0.95)
     # account = accounts[6]
 
     tribbler = TribblerMain(
         account=account,
         tribblerAddr=TRIBBLER_CONTRACT_HASH,
     )
-
-    # users = ["raghav", "rajdeep", "harsh"]
-
-    # user = users[0]
-    # if gas_price == GAS_PRICE_STANDARD:
-    #    user = "raghav"
-    # elif gas_price == GAS_PRICE_SAFE_LOW:
-    #    user = "rajdeep"
-    # else:
-    #    user = "harsh"
 
     users = ["serialuser1", "serialuser2", "serialuser3", "serialuser4", "serialuser5"]
 
@@ -92,7 +79,7 @@ def main():
     # gas_prices = [GAS_PRICE_SAFE_LOW, GAS_PRICE_STANDARD, GAS_PRICE_FAST]
     # gas_prices = [GAS_PRICE_FAST, GAS_PRICE_STANDARD, GAS_PRICE_SAFE_LOW]
     # gas_prices = [GAS_PRICE_COMMON]
-    gas_prices = [30]
+    gas_prices = [50, 40, 30, 20, 10]  # gas price in gwei
     num_tribs = 105
     for gas_price in gas_prices:
         run(

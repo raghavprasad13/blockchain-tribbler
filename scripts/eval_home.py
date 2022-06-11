@@ -1,8 +1,7 @@
 """
-sign up 1 user and make him post ~500 tribs
-check time taken for different gas prices
+Test to evaluate home() performance
 
-Usage: brownie run scripts/eval_serial_post
+Usage: brownie run scripts/eval_home
 """
 
 from brownie import accounts, network, config
@@ -10,11 +9,7 @@ from random import randint
 import time
 from .deploy import TribblerMain
 from .constants import (
-    GAS_PRICE_FAST,
-    GAS_PRICE_SAFE_LOW,
-    GAS_PRICE_STANDARD,
     TRIBBLER_CONTRACT_HASH,
-    # UTILS_CONTRACT_HASH,
 )
 from os.path import join
 import os
@@ -22,41 +17,17 @@ import os
 
 def run(gas_price: int, account, timestamp):
     network.gas_price(str(gas_price) + " gwei")
-    # account = accounts[6]
+    account = accounts[6]
 
     # account = accounts.add(config["wallets"]["from_key"])
 
     tribbler = TribblerMain(
         account=account,
-        # utilsAddr=UTILS_CONTRACT_HASH,
         tribblerAddr=TRIBBLER_CONTRACT_HASH,
     )
 
-    # users = ["user" + str(i) for i in range(10)]  # 10 users
-
-    # signup all 10 users
-    # for user in users:
-    #     tribbler.signupTx(user)
-
     test_user = "rajdeep"
-    tribbler.signupTx(test_user)
-
-    # Post 100 tribs for each user
-    # users_tribs = {user: 0 for user in users}
-    # choices = list(range(10))
-    # trib_num = 0
-    # while len(choices) > 0:
-    #     choice = randint(0, len(choices) - 1)
-    #     user_num = choices[choice]
-    #     user = "user" + str(user_num)
-    #     num_tribs = users_tribs[user]
-    #     users_tribs.update({user: num_tribs + 1})
-
-    #     tribbler.postTx(user, "trib" + str(trib_num))
-    #     if num_tribs + 1 == 100:
-    #         choices.remove(user_num)
-
-    #     trib_num += 1
+    # tribbler.signupTx(test_user)
 
     file_name = "home"
     # now = int(time.time())

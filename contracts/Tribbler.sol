@@ -2,12 +2,14 @@
 
 pragma solidity ^0.8.0;
 
+// main tribbler contract
+
 import "./User.sol";
 
 contract Tribbler {
     uint16 public constant MIN_LIST_USER = 20;
 
-    mapping(string => string) public usernameUserContractAddr;
+    mapping(string => string) public usernameUserContractAddr; // map to store username and corresponding address of user contract deployed on blockchain
     mapping(string => bool) public usernames; // this will be used to check if users already exist
     string[] usernameArray; // this will be used for listUsers
 

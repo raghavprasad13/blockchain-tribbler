@@ -2,6 +2,8 @@
 
 pragma solidity ^0.8.0;
 
+// Code to manage user specific oprations
+
 contract User {
     struct FollowUnfollowLogItem {
         // bool isValid;
@@ -33,10 +35,11 @@ contract User {
 
     function post(string memory post) public returns (bool) {
         // this function must remain `non-pure`
-
+        // hash of this transaction will be used in the actual trib data structure
         return true;
     }
 
+    // Function to actually add a trib in blockchain
     function addTrib(
         string memory message,
         uint256 timestamp,
@@ -50,7 +53,7 @@ contract User {
             blockNum,
             txIndex
         );
-        _tribs.push(trib);
+        _tribs.push(trib); // add trib
 
         return true;
     }
@@ -64,9 +67,11 @@ contract User {
         returns (bool)
     {
         // this function must remain `non-pure`
+        // hash of this transaction will be used in the actual trib data structure
         return true;
     }
 
+    // Function to actually add a follow or unfollow log in blockchain
     function appendToFollowUnfollowLog(
         bool isFollow,
         string memory whom,
@@ -78,11 +83,11 @@ contract User {
             txHash: txHash
         });
 
-        followUnfollowLog.push(logItem);
+        followUnfollowLog.push(logItem); // append log
         return true;
     }
 
     function following() public view returns (FollowUnfollowLogItem[] memory) {
-        return followUnfollowLog;
+        return followUnfollowLog; // return log and process in frontend
     }
 }

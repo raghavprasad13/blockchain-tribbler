@@ -1,13 +1,12 @@
+# Tribbler frontend
+
 from typing import List, Tuple
 import time
-from brownie import (
-    accounts,
-    Tribbler,
-    User,
-    network,
-)
+from brownie import accounts, Tribbler, User, network, config
 from .constants import *
 from .utils import *
+
+# TribblerMain class acts as frontend and contains function wrappers to trigger required operations in blockchain
 
 
 class TribblerMain:
@@ -263,10 +262,13 @@ class TribblerMain:
         return homeList
 
 
-def deploy_tribbler() -> None:
+def test_tribbler() -> None:
     network.gas_price("50 gwei")
 
     account = accounts[0]
+    # account = accounts.add(
+    #     config["wallets"]["from_key"]
+    # )  # load account by using key set in .env file
 
     tribbler = TribblerMain(account)
 
@@ -336,7 +338,7 @@ def deploy_tribbler() -> None:
     print(f"init gas: {tribbler.init_gas_used}")
 
 
-def test_tribbler() -> None:
+def test_tribbler2() -> None:
     network.gas_price("50 gwei")
 
     tribbler = TribblerMain(accounts[5])
@@ -357,7 +359,20 @@ def test_tribbler() -> None:
 
 
 def main():
-    deploy_tribbler()
+    # test_tribbler()
+
+    # deploy contract and print address
+
+    account = account[0]
+    # account = accounts.add(
+    #     config["wallets"]["from_key"]
+    # )  # load account by using key set in .env file
+
+    tribbler = TribblerMain(account)
+
+    print(
+        tribbler.getContractAddress()
+    )  # add this obtained hash to constants.py and use other scripts like eval_serial_post.py to perform operations
 
 
 if __name__ == "__main__":

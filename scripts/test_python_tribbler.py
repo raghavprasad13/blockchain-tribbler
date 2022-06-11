@@ -1,3 +1,5 @@
+# Test tribbler.py functionality
+
 from . import deploy
 from brownie import accounts, Tribbler, reverts
 import time
