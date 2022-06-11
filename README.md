@@ -1,6 +1,10 @@
 # Tribbler: A Blockchain-based Decentralized Application
 
 This repository contains code to implement Tribbler, a twitter-like service on blockchain.
+
+[Link to demo video](https://drive.google.com/file/d/1JHfVsBFs2os6VWpHJRd4HcolGiIxK-JE/view?usp=sharing)
+
+
 <p align="center">
   <img src="https://github.com/raghavprasad13/blockchain-tribbler/blob/main/tribbler-blockchain-diagram.png">
 </p>
