@@ -363,7 +363,8 @@ def main():
 
     # deploy contract and print address
 
-    account = account[0]
+    account = accounts[0]
+    # Use below account for ropsten testnet deployment
     # account = accounts.add(
     #     config["wallets"]["from_key"]
     # )  # load account by using key set in .env file
