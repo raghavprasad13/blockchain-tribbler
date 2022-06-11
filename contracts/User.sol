@@ -2,6 +2,8 @@
 
 pragma solidity ^0.8.0;
 
+// Code to manage user specific oprations
+
 import "./Utils.sol";
 
 contract User {
@@ -21,7 +23,7 @@ contract User {
     }
 
     function post(Utils.Trib memory trib) public returns (bool) {
-        _tribs.push(trib);
+        _tribs.push(trib); // add the trib
 
         return true;
     }
@@ -41,12 +43,12 @@ contract User {
             txHash: txHash
         });
 
-        followUnfollowLog.push(logItem);
+        followUnfollowLog.push(logItem); // append log
 
         return true;
     }
 
     function following() public view returns (FollowUnfollowLogItem[] memory) {
-        return followUnfollowLog;
+        return followUnfollowLog; // return log
     }
 }

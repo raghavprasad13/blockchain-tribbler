@@ -17,7 +17,6 @@ from .constants import (
 )
 from os.path import join
 import os
-import argparse
 
 
 def run(gas_price: int, num_tribs: int, account, timestamp):

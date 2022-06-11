@@ -1,3 +1,5 @@
+# Test tribbler functionality
+
 from . import deploy
 from brownie import accounts, Utils, Tribbler, reverts
 

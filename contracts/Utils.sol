@@ -2,6 +2,8 @@
 
 pragma solidity ^0.8.0;
 
+// Library of utility functions
+
 library Utils {
     uint16 public constant MAX_USERNAME_LEN = 15;
     uint16 public constant MAX_FOLLOWING = 2000;
@@ -96,47 +98,6 @@ library Utils {
             }
         }
     }
-
-    /* Function to check if username parameters who and whom are same
-     */
-    // function whoWhomSame(string memory who, string memory whom)
-    //     public
-    //     pure
-    //     returns (bool)
-    // {
-    //     return
-    //         keccak256(abi.encodePacked(who)) ==
-    //         keccak256(abi.encodePacked(whom));
-    // }
-
-    // function isValidUsername(string memory username)
-    //     public
-    //     pure
-    //     returns (bool)
-    // {
-    //     if (
-    //         bytes(username).length == 0 ||
-    //         bytes(username).length > MAX_USERNAME_LEN
-    //     ) return false;
-
-    //     bytes memory chars = bytes(username);
-
-    //     // check if the first character is a lowercase alphabet
-    //     if (
-    //         !(chars[0] >= 0x61 && chars[0] <= 0x7A) //a-z
-    //     ) return false;
-
-    //     // check the rest of the characters
-    //     for (uint256 i = 0; i < chars.length; i++) {
-    //         bytes1 char = chars[i];
-    //         if (
-    //             !(char >= 0x30 && char <= 0x39) && //9-0
-    //             !(char >= 0x61 && char <= 0x7A) //a-z
-    //         ) return false;
-    //     }
-
-    //     return true;
-    // }
 
     function getIndex(string[] memory arr, string memory elem)
         public

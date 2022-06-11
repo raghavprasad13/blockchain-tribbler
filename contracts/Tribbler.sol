@@ -2,6 +2,8 @@
 
 pragma solidity ^0.8.0;
 
+// main tribbler contract
+
 import "./User.sol";
 import "./Utils.sol";
 
@@ -32,10 +34,11 @@ contract Tribbler {
         returns (bool)
     {
         // this function must remain `non-pure`
-
+        // hash of this transaction will be used in the actual trib data structure
         return true;
     }
 
+    // Function to actually add a trib in blockchain
     function addTrib(
         string memory username,
         string memory message,
@@ -70,11 +73,14 @@ contract Tribbler {
         public
         returns (bool)
     {
+        // this function must remain `non-pure`
+        // hash of this transaction will be used in the actual trib data structure
         require(usernames[who] && usernames[whom], "User does not exist");
 
         return true;
     }
 
+    // Function to actually add a follow or unfollow log in blockchain
     function appendToFollowUnfollowLog(
         bool isFollow,
         string memory who,

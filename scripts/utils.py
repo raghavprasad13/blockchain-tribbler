@@ -1,3 +1,5 @@
+# Utility functions for frontend code
+
 from . import constants
 
 

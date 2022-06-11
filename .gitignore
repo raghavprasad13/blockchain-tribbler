@@ -8,5 +8,4 @@ reports/
 .DS_Store
 .vscode/
 blockchain-tribbler-venv/
-node_modules
-Limitations.txt
+plot-graphs-venv/
