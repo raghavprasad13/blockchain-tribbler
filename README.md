@@ -1,12 +1,15 @@
 # Tribbler: A Blockchain-based Decentralized Application
 
-This repository contains code to implement Tribbler, a twitter like service, on blockchain.
+This repository contains code to implement Tribbler, a twitter-like service on blockchain.
+<p align="center">
+  <img src="https://github.com/raghavprasad13/blockchain-tribbler/blob/main/tribbler-blockchain-diagram.png">
+</p>
 
 ## Structure of the Repository
 There are 3 branches in the repo
-1. `main` - Contains the most efficient (cost efficient) working code with separate user contracts for each user. This requires least amount of Ether coins as most of the processing and modification functionality is offloaded to the frontend
-2. `efficient-code` - Contains another implementation of code with a single tribbler contract handling all operations. This is less efficient than the code in `main` branch. 
-3. `inefficient` - This is also a correct and working implementation code. However it contains many data processing and manipulation operations in the Solidity code i.e. on blockchain. Hence it is inefficient in terms of cost (Ether coins) that it incurs when deployed on blockchain.
+1. `main` - Contains the optimized implementation with user-specific contracts. This implementation has the least gas utilization because most of the compute operations are performed on the frontend.
+2. `efficient-code` - Contains the optimized implementation that performs most of the compute operations in frontend, but has a single central tribbler contract to handle data and storage for all users. 
+3. `inefficient` - This is also a correct and working implementation code. However it contains many data processing and manipulation operations in the Solidity code i.e. on blockchain. Thus, this implementation incurs very high gas utilization.
 
 
 ### Structure of `main` branch
